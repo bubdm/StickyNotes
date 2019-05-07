@@ -1,0 +1,60 @@
+html { background: #E7CFFF; border: solid 1px black; }
+body { margin: 0; }
+
+header
+{
+	flow: horizontal;
+	background: #DBB7FF;
+}
+
+.btn
+{
+	height: *;
+	padding: 6px;
+	flow: horizontal;
+	vertical-align: middle;
+	horizontal-align: middle;
+}
+.btn.space
+{
+	margin-left: *;
+}
+.btn img
+{
+	fill: black;
+	width: 15px;
+	opacity: 0.5;
+}
+.btn:hover
+{
+	background: #ccabee;
+}
+
+htmlarea
+{
+	size: *;
+	display: block;
+
+	background: none;
+	padding: 10px;
+	overflow: scroll-indicator;
+
+	text-selection-background-color: #9BCC29;
+	text-selection-color: white;
+	color: #333333;
+}
+htmlarea p,
+htmlarea li { margin: 0; margin-bottom: 4px; list-style-position: outside; list-style-image: url(img/bullet.png); padding-left: 3px; }
+htmlarea > ul { margin: 0; padding-left: 14px; }
+htmlarea s { text-decoration: line-through; }
+
+#toolbar
+{
+	flow: horizontal;
+	border-top: solid 1px;
+	fill: rgba(0, 0, 0, 0.51);
+	padding: 3px;
+}
+#toolbar img { size: 14px; padding: 7px; margin-right: 12px; }
+#toolbar img:hover { background: rgba(0, 0, 0, 0.1); }
+#toolbar img:checked { background: rgba(0, 0, 0, 0.15); }

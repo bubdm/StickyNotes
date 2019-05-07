@@ -1,36 +1,13 @@
+<!-- OmniView:on -->
 <html>
 <head>
 	<style>
-		html { background: transparent; }
-		body
-		{
-			background-image: url('frame.png');
-			background-repeat: expand;
-			background-position: 6 6 6 6; /*top right bottom left offsets*/
-			padding: *;
-		}
-
-		h3 { font-family: system; color: white; font-weight: normal; }
-
-		.ninja { flow: stack; margin-top: 40px; }
-		.shuriken-left { margin-left: 238px; margin-top: 94px; }
-		.shuriken-right { margin-left: 363px; margin-top: 94px; }
-
-		div:hover .shuriken-left
-		{
-			transform: rotate(-3000deg);
-			transition: transform(cubic-in-out,4s,none);
-		}
-		div:hover .shuriken-right
-		{
-			transform: rotate(3000deg);
-			transition: transform(cubic-in-out,4s,none);
-		}
+		@import url(style.css);
 	</style>
 
 	<script type="text/tiscript">
 		self.on("mousedown", function(evt) {
-			view.Host_EmulateMoveWnd(self);
+			//view.Host_EmulateMoveWnd(self);
 			return true;
 		});
 
@@ -38,15 +15,40 @@
 			if(evt.keyCode==Event.VK_ESCAPE)
 				view.close();
 		};
+
+		self#btn-bold.onClick = ::self#htmlarea.execCommand("format:toggle-span:b|strong");
+		self#btn-italic.onClick = ::self#htmlarea.execCommand("format:toggle-span:i");
+		self#btn-underline.onClick = ::self#htmlarea.execCommand("format:toggle-span:u");
+		self#btn-strike.onClick = ::self#htmlarea.execCommand("format:toggle-span:s");
+		self#btn-list.onClick = ::self#htmlarea.execCommand("format:toggle-list:ul");
+		self#htmlarea.state.focus = true;
 	</script>
 </head>
 
 <body>
-	<h3>This is desktop GADGET: it will always stay visible in desktop even when all windows are minimized! &nbsp;<small>(Press ESC to exit)</small></h3>
-	<div .ninja>
-		<img src="shuriken.png" .shuriken.shuriken-left />
-		<img src="header-ninjas.png" />
-		<img src="shuriken.png" .shuriken.shuriken-right />
+	<header>
+		<div .btn><img src="img/ios-plus-empty.svg" /></div>
+		<div .btn.space><img src="img/more-button-of-three-dots.svg" /></div>
+		<div .btn><img src="img/close.svg" /></div>
+	</header>
+
+	<htmlarea #htmlarea>
+		<ul>
+			<li>Item 1</li>
+			<li>Item 2</li>
+			<li>Item 3</li>
+		</ul>
+		<p>P1</p>
+		<p>P2</p>
+		<p>P3</p>
+	</htmlarea>
+
+	<div #toolbar>
+		<img src="img/format-bold.svg" #btn-bold />
+		<img src="img/italic.svg" #btn-italic />
+		<img src="img/underline-669.svg" #btn-underline  />
+		<img src="img/format-strikethrough-variant.svg" #btn-strike />
+		<img src="img/list.svg" #btn-list />
 	</div>
 </body>
 </html>

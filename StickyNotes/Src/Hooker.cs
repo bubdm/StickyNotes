@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -133,6 +133,8 @@ namespace StickyNotes
 			// However, passing the Thread.ManagedThreadId to 
 			// SetWindowsHookEx always fails.
 			hookHandle = SetWindowsHookExW(WH_GETMESSAGE, proc, dll.DangerousGetHandle(), 0);
+
+			Debug.Assert(hookHandle != 0);
 		}
 
 		#endregion

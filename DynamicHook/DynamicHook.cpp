@@ -1,11 +1,9 @@
 // DynamicHook.cpp : Defines the exported functions for the DLL application.
-//
 
 #include "stdafx.h"
 #include "DynamicHook.h"
 #include <string>
 #include <algorithm>
-
 
 
 bool shown = false;
@@ -36,7 +34,7 @@ int HookProc(int nCode, WPARAM wParam, LPARAM lParam)
 				GetWindowText(msg->hwnd, fn, 1024);
 
 				std::wstring str;
-				str += L"explorer.exe: ";
+				str += L"explorer.exe: YEAHH ";
 				str += fn;
 				str += L" - ";
 				str += std::to_wstring(msg->message - WM_USER);
@@ -46,9 +44,9 @@ int HookProc(int nCode, WPARAM wParam, LPARAM lParam)
 				str += std::to_wstring(msg->wParam);
 				OutputDebugString(str.c_str());
 
-				auto wnd = FindWindow(NULL, L"Sciter-based desktop widget RLZ");
+				auto wnd = FindWindow(NULL, L"Sciter-based desktop TemplateDesktopGadgets");
 				if (wnd)
-					PostMessage(wnd, WM_APP + 99, msg->lParam, 0);
+					SendMessage(wnd, WM_APP + 99, msg->lParam, msg->wParam);
 			}
 		}
 
@@ -56,6 +54,5 @@ int HookProc(int nCode, WPARAM wParam, LPARAM lParam)
 		return CallNextHookEx(0, nCode, wParam, lParam);
 	}
 
-	
 	return 0;
 }

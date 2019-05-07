@@ -61,6 +61,8 @@ namespace StickyNotes
 			string path = Environment.CurrentDirectory + "/../../res/" + page_from_res_folder;
 			Debug.Assert(File.Exists(path));
             path = path.Replace('\\', '/');
+			path = Path.GetFullPath(path);
+			Debug.Assert(File.Exists(path));
 
 			string url = "file://" + path;
 		#else

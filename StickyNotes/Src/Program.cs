@@ -1,5 +1,3 @@
-using SciterSharp;
-using SciterSharp.Interop;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -7,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SciterSharp;
+using SciterSharp.Interop;
 
 namespace StickyNotes
 {
@@ -24,17 +24,12 @@ namespace StickyNotes
 			
 			// Create the window
 			var wnd = WndGlobal = new Window();
-			wnd.CreateMainWindow(500, 320,
-				SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_MAIN |
-				SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_ALPHA |
-				SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_POPUP |
-				SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_ENABLE_DEBUG);
+			wnd.CreateMainWindow(500, 320, SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_POPUP | SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_ALPHA);
 			wnd.CenterTopLevelWindow();
-#if !DEBUG
 			wnd.HideTaskbarIcon();
-#endif
-			wnd.Title = "Sciter-based desktop widget RLZ";
+			wnd.Title = "Sciter-based desktop TemplateDesktopGadgets";
 			wnd.Icon = Properties.Resources.IconMain;
+			//wnd.ExtendNCArea();
 
 			// Prepares SciterHost and then load the page
 			var host = new Host();
@@ -50,5 +45,20 @@ namespace StickyNotes
 
 			HookerInstance.ClearHook();
 		}
+
+		/*public static void RunHooker()
+		{
+			string hookexe = Environment.Is64BitOperatingSystem ? @"\Hook\64\Hooker.exe" : @"\Hook\32\Hooker.exe";
+			hookexe = AppDomain.CurrentDomain.BaseDirectory + hookexe;
+			Debug.Assert(System.IO.File.Exists(hookexe));
+
+			var p = Process.Start(new ProcessStartInfo()
+			{
+				FileName = hookexe,
+				WindowStyle = ProcessWindowStyle.Hidden
+			});
+
+			Debug.Assert(p.HasExited==false);
+		}*/
 	}
 }
