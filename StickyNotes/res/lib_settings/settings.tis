@@ -1,6 +1,6 @@
 namespace Settings
 {
-	const cNAME = "icondrop";
+	const cNAME = "stickynotes";
 	const cPATH = System.path(#USER_APPDATA) + "/settings-" + cNAME + ".json";
 	const cVERSION = 0x1;
 	var ns_data;
@@ -49,13 +49,7 @@ if(!View["settings-" + Settings.cNAME] || Utils.InDBGView)
 	Settings.RestoreWork();
 
 	// Create default data
-	if(!Settings.ns_data.config)
-		Settings.ns_data.config = {};
-	if(!Settings.ns_data.arr_projects)
-		Settings.ns_data.arr_projects = [];
-	if(!Settings.ns_data.arr_collections)
-		Settings.ns_data.arr_collections = [];
-	if(typeof(Settings.ns_data.trial_usecnt) != #integer)
-		Settings.ns_data.trial_usecnt = 0;
+	if(!Settings.ns_data.dic_notes)
+		Settings.ns_data.dic_notes = {};
 }
 Settings.ns_data = View["settings-" + Settings.cNAME];

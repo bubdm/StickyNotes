@@ -84,8 +84,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Src\MainWindow.cs" />
     <Compile Include="Src\Win32Hwnd.cs" />
-    <Compile Include="Src\Window.cs" />
+    <Compile Include="Src\StikyWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -117,6 +118,7 @@
     <Content Include="res\img\list.svg" />
     <Content Include="res\img\more-button-of-three-dots.svg" />
     <Content Include="res\img\underline-669.svg" />
+    <None Include="res\stikynote.html" />
     <Content Include="res\lib_settings\unittest.html" />
     <Content Include="res\style.css" />
     <Content Include="sciter.dll">

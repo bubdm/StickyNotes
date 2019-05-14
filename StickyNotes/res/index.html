@@ -1,54 +1,21 @@
 <!-- OmniView:on -->
 <html>
 <head>
-	<style>
-		@import url(style.css);
-	</style>
-
 	<script type="text/tiscript">
-		self.on("mousedown", function(evt) {
-			view.Host_EmulateMoveWnd(self);
-			return true;
-		});
+		include "lib_settings/settings.tis";
 
-		self.onKey = function(evt) {
-			if(evt.keyCode==Event.VK_ESCAPE)
-				view.close();
-		};
+		Settings.RestoreWork();
 
-		self#btn-bold.onClick = ::self#htmlarea.execCommand("format:toggle-span:b|strong");
-		self#btn-italic.onClick = ::self#htmlarea.execCommand("format:toggle-span:i");
-		self#btn-underline.onClick = ::self#htmlarea.execCommand("format:toggle-span:u");
-		self#btn-strike.onClick = ::self#htmlarea.execCommand("format:toggle-span:s");
-		self#btn-list.onClick = ::self#htmlarea.execCommand("format:toggle-list:ul");
-		self#htmlarea.state.focus = true;
+		if(Settings.ns_data.dic_notes.length == 0) {
+			Settings.ns_data.dic_notes = {};
+			Settings.ns_data.dic_notes[view.Host_NewGUID()] = {};
+		}
+		for(var (k,v) in Settings.ns_data.dic_notes) {
+			view.Host_CreateStikyWindow(k);
+		}
 	</script>
 </head>
 
 <body>
-	<header>
-		<div .btn><img src="img/ios-plus-empty.svg" /></div>
-		<div .btn.space><img src="img/more-button-of-three-dots.svg" /></div>
-		<div .btn><img src="img/close.svg" /></div>
-	</header>
-
-	<htmlarea #htmlarea>
-		<ul>
-			<li>Item 1</li>
-			<li>Item 2</li>
-			<li>Item 3</li>
-		</ul>
-		<p>P1</p>
-		<p>P2</p>
-		<p>P3</p>
-	</htmlarea>
-
-	<div #toolbar>
-		<img src="img/format-bold.svg" #btn-bold />
-		<img src="img/italic.svg" #btn-italic />
-		<img src="img/underline-669.svg" #btn-underline  />
-		<img src="img/format-strikethrough-variant.svg" #btn-strike />
-		<img src="img/list.svg" #btn-list />
-	</div>
 </body>
 </html>

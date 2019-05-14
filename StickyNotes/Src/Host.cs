@@ -10,25 +10,39 @@ using System.IO;
 
 namespace StickyNotes
 {
-	class Host : BaseHost
-	{
-	}
-
 	class HostEvh : SciterEventHandler
 	{
-		protected override bool OnScriptCall(SciterElement se, string name, SciterValue[] args, out SciterValue result)
+		public StikyWindow _wnd;
+
+		public void Host_Dbg()
 		{
-			result = null;
-
-			switch(name)
-			{
-				case "Host_EmulateMoveWnd":
-					Program.WndGlobal.EmulateMoveWnd();
-					return true;
-			}
-
-			return false;
 		}
+
+		public void Host_CreateStikyWindow(SciterValue[] args)
+		{
+			var wnd = new StikyWindow();
+			wnd.CreateMainWindow(500, 320, SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_POPUP | SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_ALPHA);
+			wnd.CenterTopLevelWindow();
+			wnd.HideTaskbarIcon();
+			wnd.Icon = Properties.Resources.IconMain;
+
+			var evh = new HostEvh();
+			evh._wnd = wnd;
+
+			var host = new BaseHost();
+			host.Setup(wnd);
+			host.AttachEvh(evh);
+			host.SetupPage("stikynote.html");
+
+			var guid = args[0].Get("");
+			Program.Wnds.Add(guid, wnd);
+
+			wnd.CallFunction("View_LoadNote", args[0]);
+			wnd.Show();
+		}
+
+		public SciterValue Host_NewGUID() => new SciterValue(Guid.NewGuid().ToString());
+		public void Host_EmulateMoveWnd() => _wnd.EmulateMoveWnd();
 	}
 
 	// This base class overrides OnLoadData and does the resource loading strategy

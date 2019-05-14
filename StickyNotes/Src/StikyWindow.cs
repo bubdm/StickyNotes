@@ -11,7 +11,7 @@ using PInvoke;
 
 namespace StickyNotes
 {
-	class Window : SciterWindow
+	class StikyWindow : SciterWindow
 	{
 		static	uint WM_TASKBAR_CREATED = RegisterWindowMessage("TaskbarCreated");
 		const   uint WM_APP = 0x8000;

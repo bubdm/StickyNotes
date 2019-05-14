@@ -12,8 +12,8 @@ namespace StickyNotes
 {
 	class Program
 	{
-		public static Window WndGlobal;
 		public static Hooker HookerInstance = new Hooker();
+		public static Dictionary<string, StikyWindow> Wnds = new Dictionary<string, StikyWindow>();
 
 		[STAThread]
 		static void Main(string[] args)
@@ -23,24 +23,19 @@ namespace StickyNotes
 			Debug.Assert(oleres == 0);
 			
 			// Create the window
-			var wnd = WndGlobal = new Window();
-			wnd.CreateMainWindow(500, 320, SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_POPUP | SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_ALPHA);
-			wnd.CenterTopLevelWindow();
-			wnd.HideTaskbarIcon();
+			var wnd = new MainWindow();
+			wnd.CreateMainWindow(1, 1);
 			wnd.Title = "Sciter-based desktop TemplateDesktopGadgets";
-			wnd.Icon = Properties.Resources.IconMain;
-			//wnd.ExtendNCArea();
 
 			// Prepares SciterHost and then load the page
-			var host = new Host();
+			var host = new BaseHost();
 			host.Setup(wnd);
 			host.AttachEvh(new HostEvh());
 			host.SetupPage("index.html");
 
 			HookerInstance.SetMessageHook();
 
-			// Show window and Run message loop
-			wnd.Show();
+			// Run message loop
 			PInvokeUtils.RunMsgLoop();
 
 			HookerInstance.ClearHook();
