@@ -11,57 +11,14 @@ using PInvoke;
 
 namespace StickyNotes
 {
-	class StikyWindow : SciterWindow
+	class StickyWindow : SciterWindow
 	{
-		static	uint WM_TASKBAR_CREATED = RegisterWindowMessage("TaskbarCreated");
 		const   uint WM_APP = 0x8000;
-		const	uint WM_NCPAINT = 0x0085;
-		const	uint WM_DESKTOP_CHANGED = WM_APP + 99;
-		const	uint WM_ENDSESSION = 22;
 		const	uint WM_CLOSE = 16;
 		const	uint WM_NCLBUTTONDOWN = 161;
 		
 		protected override bool ProcessWindowMessage(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam, ref IntPtr lResult)
 		{
-			if(msg==WM_TASKBAR_CREATED)
-			{
-				Program.HookerInstance.SetMessageHook();
-				return true;
-			}
-
-			if(msg == WM_DESKTOP_CHANGED)
-			{
-				if(wParam.ToInt32() == 0)
-				{
-					SetWindowPos(_hwnd, new IntPtr((int)SetWindowPosWindow.HWND_BOTTOM), 0, 0, 0, 0,
-					SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE);
-					SetWindowPos(_hwnd, new IntPtr((int)SetWindowPosWindow.HWND_TOPMOST), 0, 0, 0, 0,
-						SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE);
-					Show();
-
-					Debug.WriteLine("WM_DESKTOP_CHANGED show " + DateTime.Now);
-				}
-				else
-				{
-					SetWindowPos(_hwnd, new IntPtr((int)SetWindowPosWindow.HWND_NOTOPMOST), 0, 0, 0, 0,
-						SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOSENDCHANGING);
-					SetWindowPos(_hwnd, new IntPtr((int)SetWindowPosWindow.HWND_BOTTOM), 0, 0, 0, 0,
-						SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOSENDCHANGING);
-					Show();
-
-					Debug.WriteLine("WM_DESKTOP_CHANGED hide " + DateTime.Now);
-				}
-				return true;
-			}
-
-			if(msg == WM_ENDSESSION)
-			{
-				// system is shuting down, close app
-				SendMessageW(_hwnd, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
-				PostQuitMessage(0);
-				return true;
-			}
-
 			if(msg == WM_NCHITTEST)
 			{
 				if(DwmDefWindowProc(hwnd, msg, wParam, lParam, out lResult) != 0)
@@ -131,8 +88,26 @@ namespace StickyNotes
 					}
 				}
 			}
-			
+
 			return false;
+		}
+
+		public void SetTopmost(bool top)
+		{
+			if(top)
+			{
+				SetWindowPos(_hwnd, new IntPtr((int)SetWindowPosWindow.HWND_BOTTOM), 0, 0, 0, 0,
+				SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE);
+				SetWindowPos(_hwnd, new IntPtr((int)SetWindowPosWindow.HWND_TOPMOST), 0, 0, 0, 0,
+					SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE);
+			}
+			else
+			{
+				SetWindowPos(_hwnd, new IntPtr((int)SetWindowPosWindow.HWND_NOTOPMOST), 0, 0, 0, 0,
+							SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOSENDCHANGING);
+				SetWindowPos(_hwnd, new IntPtr((int)SetWindowPosWindow.HWND_BOTTOM), 0, 0, 0, 0,
+					SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOSENDCHANGING);
+			}
 		}
 
 		public void HideTaskbarIcon()

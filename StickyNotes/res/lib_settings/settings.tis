@@ -26,6 +26,8 @@ namespace Settings
 		}
 		
 		View["settings-" + cNAME] = ns_data = ns_data || {};
+
+		ResetData();
 	}
 	
 	function StoreWork()
@@ -36,10 +38,12 @@ namespace Settings
 		ns_data.version = cVERSION;
 		stream.printf("%V\n", ns_data);
 		stream.close();
-		
-		//stdout.printf("%V\n", ns_data);
-		//log("StoreWork");
-		//console.log(ns_data);
+	}
+
+	function ResetData()
+	{
+		ns_data.dic_notes = {};
+		StoreWork();
 	}
 }
 
@@ -47,9 +51,6 @@ namespace Settings
 if(!View["settings-" + Settings.cNAME] || Utils.InDBGView)
 {
 	Settings.RestoreWork();
-
-	// Create default data
-	if(!Settings.ns_data.dic_notes)
-		Settings.ns_data.dic_notes = {};
 }
+
 Settings.ns_data = View["settings-" + Settings.cNAME];

@@ -1,0 +1,124 @@
+<!-- OmniView:on -->
+<html>
+<head>
+	<style>
+		@import url(style.css);
+	</style>
+
+	<script type="text/tiscript">
+		include "lib_settings/settings.tis";
+		include "tis/keyboard.tis";
+
+		var note = {};
+		var guid;
+
+		function View_LoadNote(_guid) {
+			note = Settings.ns_data.dic_notes[_guid];
+			guid = _guid;
+			assert(note);
+			if(note.size)
+				view.move(note.size.x, note.size.y, note.size.width, note.size.height);
+		}
+
+		self.on("mousedown", function(evt) {
+			if(evt.target.$is(header))
+				view.Host_EmulateMoveWnd(self);
+		});
+
+		view.onSize = function() {
+			var (x,y,width,height) = view.box(#rectw, #border, #screen);
+			note.size = { x: x, y: y, width: width, height: height };
+			Settings.StoreWork();
+		};
+
+		class UI
+		{
+			function Setup()
+			{
+				self#btn-bold.onClick = ::self#htmlarea.execCommand("format:toggle-span:b|strong");
+				self#btn-italic.onClick = ::self#htmlarea.execCommand("format:toggle-span:i");
+				self#btn-underline.onClick = ::self#htmlarea.execCommand("format:toggle-span:u");
+				self#btn-strike.onClick = ::self#htmlarea.execCommand("format:toggle-span:s");
+				self#btn-list.onClick = ::self#htmlarea.execCommand("format:toggle-list:ul");
+
+				self#btn-add.onClick = function() {
+					var (x,y,width,height) = view.box(#rectw, #border, #screen);
+					x += width + 6;
+
+					var guid;
+					if(!Utils.InDBGView)
+						guid = view.Host_NewGUID();
+					else
+						guid = "asdfsadf";
+
+					var size = {
+						x: x,
+						y: y,
+						width: width,
+						height: height
+					};
+
+					while : outer (true)
+					{
+						for(var (i,v) in Settings.ns_data.dic_notes)
+						{
+							if(v.size && JSON.stringify(v.size) == JSON.stringify(size))
+							{
+								size.x += 20;
+								size.y += 20;
+								continue outer;
+							}
+						}
+						break;
+					}
+					
+					Settings.ns_data.dic_notes[guid] = { size: size };
+					Settings.StoreWork();
+
+					view.Host_CreateStickyWindow(guid);
+				};
+
+				self#btn-dots.onClick = function() {
+
+				};
+
+				self#btn-close.onClick = function() {
+					Settings.ns_data.dic_notes.remove(guid);
+					Settings.StoreWork();
+					view.close();
+				};
+			}
+		}
+		UI.Setup();
+	</script>
+</head>
+
+<body>
+	<div .bar></div>
+
+	<header>
+		<div .btn #btn-add><img src="img/ios-plus-empty.svg" /></div>
+		<div .btn.space #btn-dots><img src="img/more-button-of-three-dots.svg" /></div>
+		<div .btn #btn-close><img src="img/close.svg" /></div>
+	</header>
+
+	<htmlarea #htmlarea>
+		<ul>
+			<li>Item 1</li>
+			<li>Item 2</li>
+			<li>Item 3</li>
+		</ul>
+		<p>P1</p>
+		<p>P2</p>
+		<p>P3</p>
+	</htmlarea>
+
+	<div #toolbar>
+		<img src="img/format-bold.svg" #btn-bold />
+		<img src="img/italic.svg" #btn-italic />
+		<img src="img/underline-669.svg" #btn-underline  />
+		<img src="img/format-strikethrough-variant.svg" #btn-strike />
+		<img src="img/list.svg" #btn-list />
+	</div>
+</body>
+</html>

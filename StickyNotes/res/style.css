@@ -3,14 +3,25 @@ body { margin: 0; }
 
 header
 {
-	flow: horizontal;
 	background: #DBB7FF;
+	border-bottom: solid 6px #DBB7FF;
+	flow: horizontal;
+	position: relative;
+	top: -28px;
+}
+
+html:hover header,
+:owns-focus header
+{
+	top: 0;
+	border-bottom: none;
+	transition: top(cubic-out, 180ms, none);
 }
 
 .btn
 {
 	height: *;
-	padding: 6px;
+	padding: 7px;
 	flow: horizontal;
 	vertical-align: middle;
 	horizontal-align: middle;
@@ -25,10 +36,8 @@ header
 	width: 15px;
 	opacity: 0.5;
 }
-.btn:hover
-{
-	background: #ccabee;
-}
+.btn:hover { background: #ccabee; }
+.btn:active { background: #c4a3e5; }
 
 htmlarea
 {
@@ -50,6 +59,8 @@ htmlarea s { text-decoration: line-through; }
 
 #toolbar
 {
+	display: none;
+
 	flow: horizontal;
 	border-top: solid 1px;
 	fill: rgba(0, 0, 0, 0.51);
@@ -58,3 +69,8 @@ htmlarea s { text-decoration: line-through; }
 #toolbar img { size: 14px; padding: 7px; margin-right: 12px; }
 #toolbar img:hover { background: rgba(0, 0, 0, 0.1); }
 #toolbar img:checked { background: rgba(0, 0, 0, 0.15); }
+
+[show] #toolbar
+{
+	display: block;
+}

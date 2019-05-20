@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows.Forms;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,13 +15,20 @@ namespace StickyNotes
 {
 	class MainWindow : SciterWindow
 	{
-		static	uint WM_TASKBAR_CREATED = RegisterWindowMessage("TaskbarCreated");
+		private static NotifyIcon _ni;
+
+		static uint WM_TASKBAR_CREATED = RegisterWindowMessage("TaskbarCreated");
 		const   uint WM_APP = 0x8000;
 		const	uint WM_NCPAINT = 0x0085;
 		const	uint WM_DESKTOP_CHANGED = WM_APP + 99;
 		const	uint WM_ENDSESSION = 22;
 		const	uint WM_CLOSE = 16;
 		const	uint WM_NCLBUTTONDOWN = 161;
+
+		public void CreateNote()
+		{
+			var r = EvalScript("View.Proxy_AddNote()");
+		}
 		
 		protected override bool ProcessWindowMessage(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam, ref IntPtr lResult)
 		{
@@ -33,28 +42,12 @@ namespace StickyNotes
 			{
 				if(wParam.ToInt32() == 0)
 				{
-					foreach(var wnd in Program.Wnds.Values)
-					{
-						SetWindowPos(wnd._hwnd, new IntPtr((int)SetWindowPosWindow.HWND_BOTTOM), 0, 0, 0, 0,
-						SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE);
-						SetWindowPos(wnd._hwnd, new IntPtr((int)SetWindowPosWindow.HWND_TOPMOST), 0, 0, 0, 0,
-							SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE);
-						wnd.Show();
-					}
-
+					ShowIt(true);
 					Debug.WriteLine("WM_DESKTOP_CHANGED show " + DateTime.Now);
 				}
 				else
 				{
-					foreach(var wnd in Program.Wnds.Values)
-					{
-						SetWindowPos(wnd._hwnd, new IntPtr((int)SetWindowPosWindow.HWND_NOTOPMOST), 0, 0, 0, 0,
-							SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOSENDCHANGING);
-						SetWindowPos(wnd._hwnd, new IntPtr((int)SetWindowPosWindow.HWND_BOTTOM), 0, 0, 0, 0,
-							SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOSENDCHANGING);
-						wnd.Show();
-					}
-
+					ShowIt(false);
 					Debug.WriteLine("WM_DESKTOP_CHANGED hide " + DateTime.Now);
 				}
 				return true;
@@ -69,6 +62,32 @@ namespace StickyNotes
 			}
 			
 			return false;
+		}
+
+		public void CreateTaskbarIcon()
+		{
+			var menu = new ContextMenu();
+			menu.MenuItems.Add(new MenuItem("Add Note", (e, a) => CreateNote()));
+			menu.MenuItems.Add(new MenuItem("Quit", (e, a) => Program.Exit()));
+
+			_ni = new NotifyIcon();
+			_ni.Icon = Properties.Resources.note;
+			_ni.Visible = true;
+			_ni.ContextMenu = menu;
+			_ni.Click += (s, e) =>
+			{
+				if((e as MouseEventArgs).Button == MouseButtons.Left)
+					ShowIt(true);
+			};
+		}
+
+		private void ShowIt(bool show)
+		{
+			foreach(var wnd in Program.Wnds.Values)
+			{
+				wnd.SetTopmost(show);
+				wnd.Show();
+			}
 		}
 
 		#region PInvoke stuff

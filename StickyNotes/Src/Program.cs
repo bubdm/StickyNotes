@@ -13,7 +13,8 @@ namespace StickyNotes
 	class Program
 	{
 		public static Hooker HookerInstance = new Hooker();
-		public static Dictionary<string, StikyWindow> Wnds = new Dictionary<string, StikyWindow>();
+		public static MainWindow WndMain;
+		public static Dictionary<string, StickyWindow> Wnds = new Dictionary<string, StickyWindow>();
 
 		[STAThread]
 		static void Main(string[] args)
@@ -23,9 +24,10 @@ namespace StickyNotes
 			Debug.Assert(oleres == 0);
 			
 			// Create the window
-			var wnd = new MainWindow();
+			var wnd = WndMain = new MainWindow();
 			wnd.CreateMainWindow(1, 1);
 			wnd.Title = "Sciter-based desktop TemplateDesktopGadgets";
+			WndMain.CreateTaskbarIcon();
 
 			// Prepares SciterHost and then load the page
 			var host = new BaseHost();
@@ -39,6 +41,21 @@ namespace StickyNotes
 			PInvokeUtils.RunMsgLoop();
 
 			HookerInstance.ClearHook();
+		}
+
+		public static void Exit()
+		{
+#if WINDOWS
+			foreach(var wnd in Program.Wnds.Values)
+				wnd.Destroy();
+			WndMain.Destroy();
+
+			Thread.Sleep(200);
+			Environment.Exit(0);
+			//PInvoke.User32.PostQuitMessage(0);
+#else
+			AppKit.NSApplication.SharedApplication.Terminate(null);
+#endif
 		}
 
 		/*public static void RunHooker()

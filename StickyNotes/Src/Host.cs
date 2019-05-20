@@ -12,19 +12,19 @@ namespace StickyNotes
 {
 	class HostEvh : SciterEventHandler
 	{
-		public StikyWindow _wnd;
+		public StickyWindow _wnd;
 
 		public void Host_Dbg()
 		{
 		}
 
-		public void Host_CreateStikyWindow(SciterValue[] args)
+		public void Host_CreateStickyWindow(SciterValue[] args)
 		{
-			var wnd = new StikyWindow();
-			wnd.CreateMainWindow(500, 320, SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_POPUP | SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_ALPHA);
+			var wnd = new StickyWindow();
+			wnd.CreateMainWindow(400, 300, SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_POPUP | SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_ALPHA);
 			wnd.CenterTopLevelWindow();
 			wnd.HideTaskbarIcon();
-			wnd.Icon = Properties.Resources.IconMain;
+			wnd.Icon = Properties.Resources.note;
 
 			var evh = new HostEvh();
 			evh._wnd = wnd;
@@ -32,13 +32,15 @@ namespace StickyNotes
 			var host = new BaseHost();
 			host.Setup(wnd);
 			host.AttachEvh(evh);
-			host.SetupPage("stikynote.html");
+			host.SetupPage("stickynote.html");
 
 			var guid = args[0].Get("");
+			Debug.Assert(guid.Length > 0);
 			Program.Wnds.Add(guid, wnd);
 
 			wnd.CallFunction("View_LoadNote", args[0]);
 			wnd.Show();
+			wnd.SetTopmost(true);
 		}
 
 		public SciterValue Host_NewGUID() => new SciterValue(Guid.NewGuid().ToString());
