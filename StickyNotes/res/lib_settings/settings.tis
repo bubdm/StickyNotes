@@ -27,7 +27,7 @@ namespace Settings
 		
 		View["settings-" + cNAME] = ns_data = ns_data || {};
 
-		ResetData();
+		//ResetData();
 	}
 	
 	function StoreWork()

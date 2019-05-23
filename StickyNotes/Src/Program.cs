@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SciterSharp;
 using SciterSharp.Interop;
+using System.Net;
 
 namespace StickyNotes
 {
@@ -22,7 +23,7 @@ namespace StickyNotes
 			// Sciter needs this for drag'n'drop support; STAThread is required for OleInitialize succeess
 			int oleres = PInvokeWindows.OleInitialize(IntPtr.Zero);
 			Debug.Assert(oleres == 0);
-			
+
 			// Create the window
 			var wnd = WndMain = new MainWindow();
 			wnd.CreateMainWindow(1, 1);
@@ -37,10 +38,16 @@ namespace StickyNotes
 
 			HookerInstance.SetMessageHook();
 
+			LoadData();
+
 			// Run message loop
 			PInvokeUtils.RunMsgLoop();
 
 			HookerInstance.ClearHook();
+		}
+
+		public static void LoadData()
+		{
 		}
 
 		public static void Exit()

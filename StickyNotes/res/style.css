@@ -10,6 +10,18 @@ header
 	top: -28px;
 }
 
+#mi-colors { flow: horizontal; height: 34px; }
+#mi-colors div { size: *; }
+#mi-colors div:current { foreground: url(img/check.png) center no-repeat; }
+#mi-colors div:hover { foreground-color: rgba(0, 0, 0, 0.12); }
+#mi-colors div:nth-child(1) { background: #ffe66e; }
+#mi-colors div:nth-child(2) { background: #A1EF9B; }
+#mi-colors div:nth-child(3) { background: #FFAFDF; }
+#mi-colors div:nth-child(4) { background: #D7AFFF; }
+#mi-colors div:nth-child(5) { background: #9EDFFF; }
+#mi-colors div:nth-child(6) { background: #E0E0E0; }
+#mi-colors div:nth-child(7) { background: #767676; }
+
 html:hover header,
 :owns-focus header
 {
@@ -36,6 +48,7 @@ html:hover header,
 	width: 15px;
 	opacity: 0.5;
 }
+.btn:popup,
 .btn:hover { background: #ccabee; }
 .btn:active { background: #c4a3e5; }
 
@@ -56,6 +69,7 @@ htmlarea p,
 htmlarea li { margin: 0; margin-bottom: 4px; list-style-position: outside; list-style-image: url(img/bullet.png); padding-left: 3px; }
 htmlarea > ul { margin: 0; padding-left: 14px; }
 htmlarea s { text-decoration: line-through; }
+//htmlarea:empty { background: red; }
 
 #toolbar
 {
@@ -70,7 +84,8 @@ htmlarea s { text-decoration: line-through; }
 #toolbar img:hover { background: rgba(0, 0, 0, 0.1); }
 #toolbar img:checked { background: rgba(0, 0, 0, 0.15); }
 
-[show] #toolbar
+html:hover #toolbar,
+:owns-focus #toolbar
 {
 	display: block;
 }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using Microsoft.Win32;
 
 namespace StickyNotes
 {
@@ -45,6 +46,24 @@ namespace StickyNotes
 
 		public SciterValue Host_NewGUID() => new SciterValue(Guid.NewGuid().ToString());
 		public void Host_EmulateMoveWnd() => _wnd.EmulateMoveWnd();
+
+
+#if WINDOWS
+		public SciterValue Host_IsRegistryRun()
+		{
+			RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run");
+			return new SciterValue(rkApp.GetValue(Consts.AppName) is string);
+		}
+
+		public void Host_RunRegistry(SciterValue[] args)
+		{
+			RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+			if(args[0].Get(false))
+				rkApp.SetValue(Consts.AppName, "\"" + Consts.APP_EXE + "\" -hide");
+			else
+				rkApp.DeleteValue(Consts.AppName, false);
+		}
+#endif
 	}
 
 	// This base class overrides OnLoadData and does the resource loading strategy
