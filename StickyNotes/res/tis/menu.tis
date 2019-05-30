@@ -1,7 +1,7 @@
 ﻿self#mi-colors.on("click", "div", function(evt) {
-	var clr = evt.target.style#background-color;
-	evt.target.state.current =  true;
+	UI.SetClr(evt.target.index);
 });
+
 self#mi-quit.onClick = ::view.Host_Quit();
 self#mi-quit.$(accesskey).html = Utils.IsOSX ? "⌘ + Q" : "Ctrl + Q";
 

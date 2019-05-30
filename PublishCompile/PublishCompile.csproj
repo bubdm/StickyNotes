@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Omni\Src\ConstsVersion.cs">
+    <Compile Include="..\StickyNotes\Src\ConstsVersion.cs">
       <Link>ConstsVersion.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />

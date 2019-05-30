@@ -1,14 +1,23 @@
-html { background: #E7CFFF; border: solid 1px black; }
-body { margin: 0; }
+html { border: solid 1px black; }
+body { margin: 0; background: var(clrBody, silver); }
 
-header
-{
-	background: #DBB7FF;
-	border-bottom: solid 6px #DBB7FF;
-	flow: horizontal;
-	position: relative;
-	top: -28px;
-}
+[clr=1] header { var(clrHeader): #FFEB81; }
+[clr=1] body { var(clrBody): #FFF2AB; }
+[clr=2] header { var(clrHeader): #AFECA4; }
+[clr=2] body { var(clrBody): #CBF1C4; }
+[clr=3] header { var(clrHeader): #FFBBDD; }
+[clr=3] body { var(clrBody): #FFCCE5; }
+[clr=4] header { var(clrHeader): #DBB7FF; }
+[clr=4] body { var(clrBody): #E7CFFF; }
+[clr=5] header { var(clrHeader): #B7DFFF; }
+[clr=5] body { var(clrBody): #CDE9FF; }
+[clr=6] header { var(clrHeader): #E5E5E5; }
+[clr=6] body { var(clrBody): #F9F9F9; }
+[clr=7] header { var(clrHeader): #3E3E3E; }
+[clr=7] body { var(clrBody): #444444; }
+[clr=7] htmlarea { color: white; }
+[clr=7] header { fill: #e1e1e1; }
+[clr=7] #toolbar { fill: #C7C7C7; }
 
 #mi-colors { flow: horizontal; height: 34px; }
 #mi-colors div { size: *; }
@@ -22,35 +31,45 @@ header
 #mi-colors div:nth-child(6) { background: #E0E0E0; }
 #mi-colors div:nth-child(7) { background: #767676; }
 
-html:hover header,
-:owns-focus header
+//html:hover header,
+html:owns-focus header
 {
 	top: 0;
-	border-bottom: none;
+	border-bottom-color: var(clrBody, red);
 	transition: top(cubic-out, 180ms, none);
 }
 
-.btn
+header
+{
+	flow: horizontal;
+	position: relative;
+	top: -28px;
+
+	border-bottom: solid 6px var(clrHeader, silver);
+	background: var(clrHeader, silver);
+	fill: black;
+}
+
+header .btn
 {
 	height: *;
-	padding: 7px;
+	padding: 8px;
 	flow: horizontal;
 	vertical-align: middle;
 	horizontal-align: middle;
 }
-.btn.space
+header .btn.space
 {
 	margin-left: *;
 }
-.btn img
+header .btn img
 {
-	fill: black;
 	width: 15px;
 	opacity: 0.5;
 }
-.btn:popup,
-.btn:hover { background: #ccabee; }
-.btn:active { background: #c4a3e5; }
+header .btn:popup,
+header .btn:hover { background: rgba(0,0,0,0.1); }
+header .btn:active { background: rgba(0,0,0,0.15); }
 
 htmlarea
 {

@@ -144,6 +144,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\note.ico" />
+    <Content Include="D:\sciter-sdk\bin\64\sciter.dll">
+      <Link>sciter.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\dlg_about.html" />
     <Content Include="res\img\bullet.png" />
     <Content Include="res\img\close.svg" />
     <Content Include="res\img\dots-horizontal.svg" />
@@ -152,6 +157,7 @@
     <Content Include="res\img\ios-plus-empty.svg" />
     <Content Include="res\img\italic.svg" />
     <Content Include="res\img\list.svg" />
+    <Content Include="res\img\logo_mi.png" />
     <Content Include="res\img\more-button-of-three-dots.svg" />
     <Content Include="res\img\underline-669.svg" />
     <None Include="res\tis\keyboard.tis" />
@@ -161,9 +167,10 @@
     <Content Include="res\lib_menu\unittes.html" />
     <Content Include="res\lib_settings\unittest.html" />
     <Content Include="res\style.css" />
-    <Content Include="sciter.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="res\unittest.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Debug\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

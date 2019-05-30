@@ -59,7 +59,7 @@ namespace StickyNotes
 		{
 			RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 			if(args[0].Get(false))
-				rkApp.SetValue(Consts.AppName, "\"" + Consts.APP_EXE + "\" -hide");
+				rkApp.SetValue(Consts.AppName, "\"" + Consts.APP_EXE + "\"");
 			else
 				rkApp.DeleteValue(Consts.AppName, false);
 		}

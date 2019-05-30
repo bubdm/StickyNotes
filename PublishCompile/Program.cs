@@ -4,7 +4,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using FluentFTP;
 
 partial class Script
 {
@@ -29,17 +28,15 @@ partial class Script
 
 			// Run with -test
 			Console.WriteLine("### RUN + TESTS (WAITS FOR EXIT) ###");
-			//SpawnProcess(exe_test, "-test");
-			SpawnProcess(exe_test);
+			SpawnProcess(exe_test, "-test");
 		}
 		else
 		{
 			_upload_output = CWD + "ReleaseInfo/Latest/DesignArsenal.zip";
 		}
 
-		// Upload
-		Console.WriteLine("### UPLOAD");
-		UploadMI();
+		// Copy to Dropbox
+		File.Copy(_upload_output, "D:\\Dropbox\\Apps\\" + "");
 
 		// Save version
 		Console.WriteLine("### UPDATE INFO");
@@ -49,7 +46,7 @@ partial class Script
 		}
 
 		// Print in debug
-		Debug.WriteLine("### COMPILE/UPLOAD COMPLETED!");
+		Debug.WriteLine("### COMPLETED!");
 	}
 
 	static string BuildAndDeploy()

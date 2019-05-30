@@ -7,9 +7,11 @@
 		Settings.ResetData();
 
 		View.Proxy_AddNote = function() {
+			var guid = view.Host_NewGUID();
 			Settings.ns_data.dic_notes = {};
-			Settings.ns_data.dic_notes[view.Host_NewGUID()] = {};
+			Settings.ns_data.dic_notes[guid] = {};
 			Settings.StoreWork();
+			//view.Host_CreateStickyWindow(guid);
 		};
 
 		if(Settings.ns_data.dic_notes.length == 0)
