@@ -2,7 +2,8 @@
 <html>
 <head>
 	<style>
-		@import url(style.css);
+		@import url(css/global.css);
+		@import url(css/style.css);
 		@import url(lib_menu/menu-chrome.css);
 	</style>
 
@@ -11,37 +12,59 @@
 		include "tis/keyboard.tis";
 		include "tis/menu.tis";
 
-		var note = {};
+		var note;
 		var guid;
 
 		function View_LoadNote(_guid) {
 			note = Settings.ns_data.dic_notes[_guid];
+
 			guid = _guid;
 			assert(note);
 
-			UI.SetClr(note.clr || 0);
-
+			UI.SetClr(note.color || 0);
+			
 			if(note.size)
 				view.move(note.size.x, note.size.y, note.size.width, note.size.height);
+			onMoveResize();
+
 			if(!note.value)
 			{
 				note.value = "<p></p>";
 			}
 			self#htmlarea.value = note.value;
 			self#htmlarea.execCommand("navigate:start");
+
+			view.on("activate", function(mode) {
+				if(mode != false) {
+					self.post(::self#htmlarea.state.focus = true);
+				}
+			});
+
+			/*self.post(::self#htmlarea.state.focus = true);
+			self.timer(200, function() {
+				log(view.focus);
+				return true;
+			});*/
+
+			return view;
 		};
 
+		if(Utils.InDBGView) {
+			//View_LoadNote("ASD");
+		}
 		
 		self.on("mousedown", function(evt) {
 			if(evt.target.$is(header))
 				view.Host_EmulateMoveWnd(self);
 		});
 
-		view.onSize = function() {
+		function onMoveResize() {
+			assert(note == Settings.ns_data.dic_notes[guid]);
 			var (x,y,width,height) = view.box(#rectw, #border, #screen);
 			note.size = { x: x, y: y, width: width, height: height };
 			Settings.StoreWork();
 		};
+		view.on("size", onMoveResize).on("move", onMoveResize);
 
 		class UI
 		{
@@ -56,47 +79,24 @@
 
 				self#btn-add.onClick = function() {
 					var (x,y,width,height) = view.box(#rectw, #border, #screen);
-					x += width + 6;
-
-					var guid;
-					if(!Utils.InDBGView)
-						guid = view.Host_NewGUID();
-					else
-						guid = "asdfsadf";
 
 					var size = {
-						x: x,
+						x: x + width + 6,
 						y: y,
 						width: width,
 						height: height
 					};
 
-					while : outer (true)
-					{
-						for(var (i,v) in Settings.ns_data.dic_notes)
-						{
-							if(v.size && JSON.stringify(v.size) == JSON.stringify(size))
-							{
-								size.x += 20;
-								size.y += 20;
-								continue outer;
-							}
-						}
-						break;
-					}
-
-					Settings.ns_data.dic_notes[guid] = { size: size, clr: note.clr };
-					Settings.StoreWork();
-
-					view.Host_CreateStickyWindow(guid);
+					View.Proxy_CreateStickyView(note.color, size);
 				};
-
+				
 				self#btn-dots.onClick = function() {
 					this.popup(self#menu-main, Utils.popupAttachment());
 				};
 
 				self#btn-close.onClick = function() {
-					Settings.ns_data.dic_notes.remove(guid);
+					delete Settings.ns_data.dic_notes[guid];
+					
 					Settings.StoreWork();
 					view.close();
 				};
@@ -140,6 +140,7 @@
 			{
 				self#mi-colors.$$(div)[clr_idx].state.current = true;
 				self.attributes#clr = clr_idx + 1;
+				assert(note);
 
 				note.color = clr_idx;
 				Settings.StoreWork();
@@ -147,7 +148,7 @@
 		}
 
 		UI.Setup();
-		UI.SetClr(6);
+		//UI.SetClr(6);
 	</script>
 
 	<menu .menu-chromed #menu-main .outline style="margin-top: -4px; margin-left: -7px;">
@@ -178,7 +179,7 @@
 		<div .btn #btn-close><img src="img/close.svg" /></div>
 	</header>
 
-	<htmlarea #htmlarea>
+	<htmlarea #htmlarea spellcheck="off">
 		<ul>
 			<li>Item 1</li>
 			<li>Item 2</li>
@@ -195,7 +196,7 @@
 		<img src="img/underline-669.svg" #btn-underline  />
 		<img src="img/format-strikethrough-variant.svg" #btn-strike />
 		<img src="img/list.svg" #btn-list />
-		<img src="img/horizontal-rule.svg" #btn-hr />
+		<img src="img/horizontal-rule.svg" #btn-hr style="display: none" />
 	</div>
 </body>
 </html>

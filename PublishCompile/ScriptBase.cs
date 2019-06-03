@@ -28,9 +28,9 @@ partial class Script
 		}
 	}
 
-	class FtpReport : IProgress<double>
+	class FtpReport : IProgress<FtpProgress>
 	{
-		public void Report(double value) => Console.WriteLine(value);
+		public void Report(FtpProgress prog) => Console.WriteLine(prog.Progress);
 	}
 
 	static void GitPush()

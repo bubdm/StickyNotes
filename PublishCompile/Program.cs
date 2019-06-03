@@ -4,31 +4,32 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using StickyNotes;
 
 partial class Script
 {
-	const string APPNAME = "Sticky notes";
+	const string APPNAME = "StickyNotes";
 	const string APPNAME_EXE = APPNAME + ".exe";
 	const string CONFIG = "Release";
 
 	public static void Main(string[] args)
 	{
 		if(Environment.OSVersion.Platform == PlatformID.Win32NT)
-			CWD = @"C:\Users\Ramon\Desktop\Coisas\StickyNotes\ReleaseInfo";
+			CWD = @"D:\ProjetosSciter\StickyNotes\ReleaseInfo\";
 		else
 			CWD = "/Users/midiway/Documents/Omni/";
 
 		Environment.CurrentDirectory = CWD;
 
-		string exe_test;
+		string exe;
 		if(true)
 		{
-			GitPush();
-			exe_test = BuildAndDeploy();
+			//GitPush();
+			exe = BuildAndDeploy();
 
 			// Run with -test
 			Console.WriteLine("### RUN + TESTS (WAITS FOR EXIT) ###");
-			SpawnProcess(exe_test, "-test");
+			SpawnProcess(exe, "-test");
 		}
 		else
 		{
@@ -36,13 +37,14 @@ partial class Script
 		}
 
 		// Copy to Dropbox
-		File.Copy(_upload_output, "D:\\Dropbox\\Apps\\" + "");
+		File.Copy(_upload_output, "D:\\Dropbox\\Apps\\" + Path.GetFileName(_upload_output));
 
 		// Save version
 		Console.WriteLine("### UPDATE INFO");
 		using(WebClient wb = new WebClient())
 		{
-			//wb.DownloadString("https://ionsite.azurewebsites.net/Info/SetInfo?ep=OMNI&version=" + Omni.Consts.VersionInt);
+			var res = wb.DownloadString("https://ionsite.azurewebsites.net/Info/SetInfo?ep=" + Consts.ProductID + "&version=" + Consts.VersionInt);
+			Debug.Assert(res == "OK");
 		}
 
 		// Print in debug
@@ -95,8 +97,9 @@ partial class Script
 			// Copy \bin\Release to WORK_DIR
 			string BIN_DIR = Path.GetFullPath(CWD + "..\\" + APPNAME + "\\bin\\Release");
 
-			var files1 = Directory.EnumerateFiles(BIN_DIR, "*.exe", SearchOption.AllDirectories);
-			var files2 = Directory.EnumerateFiles(BIN_DIR, "*.dll", SearchOption.AllDirectories);
+			var files1 = Directory.EnumerateFiles(BIN_DIR, "*.exe", SearchOption.AllDirectories).ToList();
+			var files2 = Directory.EnumerateFiles(BIN_DIR, "*.dll", SearchOption.AllDirectories).ToList();
+			Debug.Assert(files1.Count + files2.Count > 0);
 			foreach(var file in files1.Union(files2))
 			{
 				if(file.EndsWith(".vshost.exe"))

@@ -92,14 +92,14 @@ namespace StickyNotes
 			return false;
 		}
 
-		public void SetTopmost(bool top)
+		public void SetUltraTopmost(bool top)
 		{
 			if(top)
 			{
 				SetWindowPos(_hwnd, new IntPtr((int)SetWindowPosWindow.HWND_BOTTOM), 0, 0, 0, 0,
-				SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE);
+					SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOACTIVATE);
 				SetWindowPos(_hwnd, new IntPtr((int)SetWindowPosWindow.HWND_TOPMOST), 0, 0, 0, 0,
-					SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE);
+					SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOACTIVATE);
 			}
 			else
 			{

@@ -4,24 +4,69 @@
 	<script type="text/tiscript">
 		include "lib_settings/settings.tis";
 
-		Settings.ResetData();
+		//Settings.ResetData();
 
-		View.Proxy_AddNote = function() {
+		var dic_guid2view = {};
+
+		function NewNote(color, size) {
+			assert(typeof(color)==#integer);
+
 			var guid = view.Host_NewGUID();
-			Settings.ns_data.dic_notes = {};
-			Settings.ns_data.dic_notes[guid] = {};
+			Settings.ns_data.dic_notes[guid] = { size: size, color: color };
 			Settings.StoreWork();
-			//view.Host_CreateStickyWindow(guid);
+			return guid;
+		}
+
+		View.Proxy_AddNote = function() {// from taskbar
+			var size;
+			var color = 0;
+			if(dic_guid2view.length > 0)
+			{
+				var last_guid = Object.keys(dic_guid2view)[dic_guid2view.length-1];
+				var note = Settings.ns_data.dic_notes[last_guid];
+
+				var base_view = dic_guid2view[Object.keys(dic_guid2view)[0]];
+				var (x,y,width,height) = base_view.box(#rectw, #border, #screen);
+				size = {
+					x: x + width + 6,
+					y: y,
+					width: width,
+					height: height
+				};
+				color = note.color;
+			}
+
+			View.Proxy_CreateStickyView(color, size);
+		};
+
+		View.Proxy_CreateStickyView = function(color, size) {// from + button or taskbar, not called for notes loaded from config
+			while : outer (true)
+			{
+				for(var (guid,v) in Settings.ns_data.dic_notes)
+				{
+					if(v.size && JSON.stringify(v.size) == JSON.stringify(size))
+					{
+						size.x += 20;
+						size.y += 20;
+						continue outer;
+					}
+				}
+				break;
+			}
+
+			var guid = NewNote(color, size);
+			var new_view = view.Host_CreateStickyWindow(guid);
+			dic_guid2view[guid] = new_view;
 		};
 
 		if(Settings.ns_data.dic_notes.length == 0)
-			View.Proxy_AddNote();
+			NewNote(0, undefined);
 
-		for(var (k,v) in Settings.ns_data.dic_notes)
-			view.Host_CreateStickyWindow(k);
+		for(var (guid,v) in Settings.ns_data.dic_notes)
+		{
+			var new_view = view.Host_CreateStickyWindow(guid);
+			dic_guid2view[guid] = new_view;
+		}
 	</script>
 </head>
-
-<body>
-</body>
 </html>

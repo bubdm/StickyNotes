@@ -10,28 +10,103 @@ using System.Runtime.InteropServices;
 using SciterSharp;
 using SciterSharp.Interop;
 using PInvoke;
+using Microsoft.WindowsAPICodePack.Taskbar;
+using System.Reflection;
+using System.IO;
+using Microsoft.WindowsAPICodePack.Shell;
 
 namespace StickyNotes
 {
-	class MainWindow : SciterWindow
+	class MainWindow : SciterWindow, IDisposable
 	{
 		private static NotifyIcon _ni;
 
 		static uint WM_TASKBAR_CREATED = RegisterWindowMessage("TaskbarCreated");
+		static Dictionary<string, uint> _cmd2jumplist_msg = new Dictionary<string, uint>()
+		{
+			["BringToFront"] = RegisterWindowMessage(Consts.AppName + ".BringToFront"),
+			["ClearHistoryArg"] = RegisterWindowMessage(Consts.AppName + ".Jumplist.ClearHistoryArg")
+		};
+		
+		public const	string WND_TITLE = "Sciter-based desktop Sticky notes";
 		const   uint WM_APP = 0x8000;
-		const	uint WM_NCPAINT = 0x0085;
 		const	uint WM_DESKTOP_CHANGED = WM_APP + 99;
-		const	uint WM_ENDSESSION = 22;
-		const	uint WM_CLOSE = 16;
-		const	uint WM_NCLBUTTONDOWN = 161;
+
+		public static void SendJumplistCmd(string cmd)
+		{
+			var wnd = User32.FindWindow(null, WND_TITLE);
+			if(wnd != IntPtr.Zero)
+			{
+				User32.SendMessage(wnd, (User32.WindowMessage) _cmd2jumplist_msg[cmd], IntPtr.Zero, IntPtr.Zero);
+				SciterSharp.MessageBox.Show(IntPtr.Zero, cmd, cmd);
+			}
+		}
+
+		public void CreateJumplists()
+		{
+			JumpList list = JumpList.CreateJumpListForIndividualWindow(TaskbarManager.Instance.ApplicationId, _hwnd);
+			JumpListCustomCategory userActionsCategory = new JumpListCustomCategory("Actions");
+			JumpListLink userActionLink = new JumpListLink(Assembly.GetEntryAssembly().Location, "Clear History");
+			userActionLink.Arguments = "-jumplist:gogo";
+
+			//add this link to the Actions Category
+			userActionsCategory.AddJumpListItems(userActionLink);
+
+			//finally add the category to the JumpList
+			list.AddCustomCategories(userActionsCategory);
+
+			//get the notepad.exe path
+			string notepadPath = Path.Combine(Environment.SystemDirectory, "notepad.exe");
+
+			//attach it to the JumpListLink
+			JumpListLink jlNotepad = new JumpListLink(notepadPath, "Notepad");
+
+			//set its icon path
+			jlNotepad.IconReference = new IconReference(notepadPath, 0);
+
+			//add it to the list
+			list.AddUserTasks(jlNotepad);
+
+			list.Refresh();
+		}
+
+		public void CreateTaskbarIcon()
+		{
+			var menu = new ContextMenu();
+			menu.MenuItems.Add(new MenuItem("Add Note", (e, a) => CreateNote()));
+			menu.MenuItems.Add(new MenuItem("Quit", (e, a) => Program.Exit()));
+
+			_ni = new NotifyIcon();
+			_ni.Icon = Properties.Resources.note;
+			_ni.Visible = true;
+			_ni.ContextMenu = menu;
+			_ni.Click += (s, e) =>
+			{
+				if((e as MouseEventArgs).Button == MouseButtons.Left)
+					ShowIt(true);
+			};
+		}
 
 		public void CreateNote()
 		{
-			var r = EvalScript("View.Proxy_AddNote()");
+			EvalScript("View.Proxy_AddNote()");
 		}
-		
+
+		public void Dispose()
+		{
+			_ni.Dispose();
+		}
+
 		protected override bool ProcessWindowMessage(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam, ref IntPtr lResult)
 		{
+			foreach(var item in _cmd2jumplist_msg)
+			{
+				if(msg == item.Value)
+				{
+				}
+			}
+		
+
 			if(msg==WM_TASKBAR_CREATED)
 			{
 				Program.HookerInstance.SetMessageHook();
@@ -53,49 +128,27 @@ namespace StickyNotes
 				return true;
 			}
 
-			if(msg == WM_ENDSESSION)
+			if(msg == (uint)User32.WindowMessage.WM_ENDSESSION)
 			{
 				// system is shuting down, close app
-				SendMessageW(_hwnd, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
-				PostQuitMessage(0);
+				User32.SendMessage(_hwnd, User32.WindowMessage.WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+				User32.PostQuitMessage(0);
 				return true;
 			}
 			
 			return false;
 		}
 
-		public void CreateTaskbarIcon()
-		{
-			var menu = new ContextMenu();
-			menu.MenuItems.Add(new MenuItem("Add Note", (e, a) => CreateNote()));
-			menu.MenuItems.Add(new MenuItem("Quit", (e, a) => Program.Exit()));
-
-			_ni = new NotifyIcon();
-			_ni.Icon = Properties.Resources.note;
-			_ni.Visible = true;
-			_ni.ContextMenu = menu;
-			_ni.Click += (s, e) =>
-			{
-				if((e as MouseEventArgs).Button == MouseButtons.Left)
-					ShowIt(true);
-			};
-		}
-
 		private void ShowIt(bool show)
 		{
 			foreach(var wnd in Program.Wnds.Values)
 			{
-				wnd.SetTopmost(show);
+				wnd.SetUltraTopmost(show);
 				wnd.Show();
 			}
 		}
 
 		#region PInvoke stuff
-		const uint WM_NCCALCSIZE = 0x0083;
-		const uint WM_NCHITTEST = 0x0084;
-		const uint WM_WINDOWPOSCHANGED = 0x0047;
-		const uint WM_SIZE = 0x0005;
-
 		const int HTERROR = (-2);
 		const int HTTRANSPARENT = (-1);
 		const int HTNOWHERE = 0;
@@ -215,9 +268,6 @@ namespace StickyNotes
 
 		[DllImport("user32.dll")]
 		static extern IntPtr SendMessageW(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-		[DllImport("user32.dll")]
-		static extern void PostQuitMessage(int nExitCode);
 
 		[DllImport("user32.dll")]
 		static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);

@@ -8,21 +8,26 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.Win32;
+using System.Reflection;
+using PInvoke;
 
 namespace StickyNotes
 {
 	class HostEvh : SciterEventHandler
 	{
-		public StickyWindow _wnd;
+		private static List<HostEvh> _instances = new List<HostEvh>();
+		private StickyWindow _wnd;
 
-		public void Host_Dbg()
+		public HostEvh() { _instances.Add(this); }
+
+		public void Host_Dbg(SciterValue[] args)
 		{
 		}
 
-		public void Host_CreateStickyWindow(SciterValue[] args)
+		public SciterValue Host_CreateStickyWindow(SciterValue[] args)
 		{
 			var wnd = new StickyWindow();
-			wnd.CreateMainWindow(400, 300, SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_POPUP | SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_ALPHA);
+			wnd.CreateMainWindow(320, 320, SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_POPUP | SciterXDef.SCITER_CREATE_WINDOW_FLAGS.SW_ALPHA);
 			wnd.CenterTopLevelWindow();
 			wnd.HideTaskbarIcon();
 			wnd.Icon = Properties.Resources.note;
@@ -39,13 +44,29 @@ namespace StickyNotes
 			Debug.Assert(guid.Length > 0);
 			Program.Wnds.Add(guid, wnd);
 
-			wnd.CallFunction("View_LoadNote", args[0]);
+			var view = wnd.CallFunction("View_LoadNote", args[0]);
 			wnd.Show();
-			wnd.SetTopmost(true);
+			//wnd.SetUltraTopmost(true);
+
+			host.InvokePost(() =>
+			{
+				wnd.Show();
+				new Win32Hwnd(wnd._hwnd).FocusAndActivate();
+			});
+			return view;
 		}
 
+
 		public SciterValue Host_NewGUID() => new SciterValue(Guid.NewGuid().ToString());
+		public SciterValue Host_AppVersion()
+		{
+			var result = new SciterValue();
+			result["ver"] = new SciterValue(Consts.Version);
+			result["dt"] = new SciterValue(File.GetLastWriteTime(Assembly.GetExecutingAssembly().Location));
+			return result;
+		}
 		public void Host_EmulateMoveWnd() => _wnd.EmulateMoveWnd();
+		public void Host_Quit() => Program.Exit();
 
 
 #if WINDOWS
@@ -77,11 +98,15 @@ namespace StickyNotes
 		protected SciterArchive _archive = new SciterArchive();
 		protected SciterWindow _wnd;
 
+		private static List<BaseHost> _instances = new List<BaseHost>();
+
 		public BaseHost()
 		{
+			_instances.Add(this);
+
 		#if !DEBUG
-			_archive.Open(SciterSharpAppResource.ArchiveResource.resources);
-		#endif
+			_archive.Open(SciterAppResource.ArchiveResource.resources);
+#endif
 		}
 
 		public void Setup(SciterWindow wnd)
