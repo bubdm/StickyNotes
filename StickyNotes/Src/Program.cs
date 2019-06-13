@@ -60,11 +60,11 @@ namespace StickyNotes
 
 			if(!arg_in_test && SingleInstance.IsRunningAndAcquire())
 			{
-				MainWindow.SendJumplistCmd("BringToFront");
 				Debug.WriteLine("ALREADY RUNNING!");
 				return;
 			}
 
+			//MainWindow.SendJumplistCmd("BringToFront");
 			//wnd.CreateNote();
 
 			// Run message loop

@@ -76,7 +76,7 @@ htmlarea
 	size: *;
 	display: block;
 
-	background: none;
+	background: none !important;
 	padding: 10px;
 	overflow: scroll-indicator;
 
@@ -85,11 +85,16 @@ htmlarea
 	color: #333333;
 }
 htmlarea p,
-htmlarea li { margin: 0; margin-bottom: 4px; list-style-position: outside; list-style-image: url(../img/bullet.png); padding-left: 3px; }
+htmlarea li { margin: 0; margin-bottom: 4px; list-style-position: outside; list-style-image: url(../img/bullet.png); }
 [clr=7] htmlarea li { list-style-image: none; }
 htmlarea > ul { margin: 0; padding-left: 14px; }
 htmlarea s { text-decoration: line-through; }
-//htmlarea:empty { background: red; }
+
+htmlarea h1,
+htmlarea h2,
+htmlarea h3,
+htmlarea h4,
+htmlarea h5 { margin: 0; }
 
 #toolbar
 {

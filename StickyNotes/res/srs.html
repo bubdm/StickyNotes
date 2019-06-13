@@ -1,0 +1,44 @@
+<!-- OmniView:on -->
+<html>
+<head>
+	<style>
+		@import url(css/global.css);
+		@import url(css/style.css);
+		@import url(css/srs.css);
+		@import url(lib_menu/menu-chrome.css);
+	</style>
+
+	<script type="text/tiscript">
+		include "lib_settings/settings.tis";
+	</script>
+</head>
+
+<body>
+	<header>
+		<div .btn #btn-add><img src="img/ios-plus-empty.svg" /></div>
+		<div .btn.space #btn-dots><img src="img/more-button-of-three-dots.svg" /></div>
+		<div .btn #btn-close><img src="img/close.svg" /></div>
+	</header>
+
+	<main>
+		<div #front>
+			<h1>Brasil</h1>
+			<button>Click to flip</button>
+		</div>
+
+		<div #back>
+			<h1>Brasilia</h1>
+
+		</div>
+	</main>
+
+	<div #toolbar>
+		<img src="img/format-bold.svg" #btn-bold />
+		<img src="img/italic.svg" #btn-italic />
+		<img src="img/underline-669.svg" #btn-underline />
+		<img src="img/format-strikethrough-variant.svg" #btn-strike />
+		<img src="img/list.svg" #btn-list />
+		<img src="img/horizontal-rule.svg" #btn-hr style="display: none" />
+	</div>
+</body>
+</html>

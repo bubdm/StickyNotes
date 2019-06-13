@@ -5,8 +5,6 @@
 		@import url(css/global.css);
 		@import url(css/style.css);
 		@import url(lib_menu/menu-chrome.css);
-
-		* { marker: none !important; }
 	</style>
 
 	<script type="text/tiscript">
@@ -17,6 +15,8 @@
 		var note;
 		var guid;
 
+		console.show(Settings.ns_data);
+
 		function View_LoadNote(_guid) {
 			note = Settings.ns_data.dic_notes[_guid];
 
@@ -24,7 +24,7 @@
 			assert(note);
 
 			UI.SetClr(note.color || 0);
-			
+
 			if(note.size)
 				view.move(note.size.x, note.size.y, note.size.width, note.size.height);
 			onMoveResize();
@@ -33,12 +33,13 @@
 			{
 				note.value = "<p></p>";
 			}
+
 			self#htmlarea.value = note.value;
 			self#htmlarea.execCommand("navigate:start");
 
 			view.on("activate", function(mode) {
-				if(mode != false) {
-					self.post(::self#htmlarea.state.focus = true);
+				if(mode === true) {
+					//self.timer(20ms,::self#htmlarea.state.focus = true);
 				}
 			});
 
@@ -52,15 +53,19 @@
 		};
 
 		if(Utils.InDBGView) {
-			//View_LoadNote("ASD");
+			Settings.ns_data.dic_notes = { "guid": { } };
+			self.post(::View_LoadNote("guid"));
 		}
-		
+
 		self.on("mousedown", function(evt) {
 			if(evt.target.$is(header))
 				view.Host_EmulateMoveWnd(self);
 		});
 
 		function onMoveResize() {
+			if(note == undefined)
+				return;
+
 			assert(note == Settings.ns_data.dic_notes[guid]);
 			var (x,y,width,height) = view.box(#rectw, #border, #screen);
 			note.size = { x: x, y: y, width: width, height: height };
@@ -91,21 +96,28 @@
 
 					View.Proxy_CreateStickyView(note.color, size);
 				};
-				
+
 				self#btn-dots.onClick = function() {
 					this.popup(self#menu-main, Utils.popupAttachment());
 				};
 
 				self#btn-close.onClick = function() {
 					delete Settings.ns_data.dic_notes[guid];
-					
+
 					Settings.StoreWork();
 					view.close();
 				};
 
 				self#htmlarea.onValueChanged = function() {
 					note.value = this.value;
-					console.log(this.value);
+					if(note.value == "<text></text>")
+						self#htmlarea.value = "<p></p>";
+					else if(note.value.length != 0 && note.value[0] != "<")
+					{
+						self#htmlarea.value = "<p>" + note.value + "</p>";
+						self#htmlarea.execCommand("navigate:end");
+					}
+					
 					Settings.StoreWork();
 				};
 
@@ -181,7 +193,7 @@
 		<div .btn #btn-close><img src="img/close.svg" /></div>
 	</header>
 
-	<htmlarea #htmlarea spellcheck="off">
+	<htmlarea #htmlarea spellcheck="false">
 		<ul>
 			<li>Item 1</li>
 			<li>Item 2</li>
@@ -195,7 +207,7 @@
 	<div #toolbar>
 		<img src="img/format-bold.svg" #btn-bold />
 		<img src="img/italic.svg" #btn-italic />
-		<img src="img/underline-669.svg" #btn-underline  />
+		<img src="img/underline-669.svg" #btn-underline />
 		<img src="img/format-strikethrough-variant.svg" #btn-strike />
 		<img src="img/list.svg" #btn-list />
 		<img src="img/horizontal-rule.svg" #btn-hr style="display: none" />

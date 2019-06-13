@@ -173,6 +173,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="res\css\global.css" />
+    <Content Include="res\css\srs.css" />
+    <Content Include="res\css\htmlarea.css" />
     <Content Include="res\dlg_about.html" />
     <Content Include="res\img\banner.png" />
     <Content Include="res\img\bullet.png" />
@@ -195,6 +197,7 @@
     <Content Include="res\lib_menu\unittes.html" />
     <Content Include="res\lib_settings\unittest.html" />
     <Content Include="res\css\style.css" />
+    <None Include="res\srs.html" />
     <Content Include="res\unittest.html" />
   </ItemGroup>
   <ItemGroup />

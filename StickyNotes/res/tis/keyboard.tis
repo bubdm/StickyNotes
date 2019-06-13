@@ -10,6 +10,22 @@ self.on("~keydown", function(evt) {
 	{
 		switch(evt.keyCode)
 		{
+		case Event.VK_0:
+				self#htmlarea.execCommand("format:morph-block:p");
+			return true;
+
+		case Event.VK_1:
+		case Event.VK_2:
+		case Event.VK_3:
+		case Event.VK_4:
+		case Event.VK_5:
+			{
+				count();
+				var hX = evt.keyCode - Event.VK_1 + 1;
+				self#htmlarea.execCommand("format:morph-block:h" + hX);
+			}
+			return true;
+
 		case Event.VK_Q:
 			view.Host_Quit();
 			return true;

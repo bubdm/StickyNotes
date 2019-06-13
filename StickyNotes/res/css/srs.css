@@ -1,0 +1,9 @@
+main
+{
+	size: *;
+}
+
+#front { flow: vertical; horizontal-align: center; cursor: pointer; }
+
+h1 { text-align: center; size: *; }
+
