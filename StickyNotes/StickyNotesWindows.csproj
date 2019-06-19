@@ -65,6 +65,9 @@
     <ApplicationIcon>Resources\note.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LiteDB, Version=4.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.3.3, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft-WindowsAPICodePack-Core.1.1.3.3\lib\net452\Microsoft.WindowsAPICodePack.dll</HintPath>
     </Reference>
@@ -88,7 +91,8 @@
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="SciterSharpWindows, Version=2.0.80.0, Culture=neutral, PublicKeyToken=917100d643775a9e, processorArchitecture=MSIL">
-      <HintPath>..\packages\SciterSharpWindows.2.0.80\lib\net45\SciterSharpWindows.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SciterSharp\SciterSharp\bin\Debug\SciterSharpWindows.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -145,6 +149,7 @@
     <Compile Include="Src\MainWindow.cs" />
     <Compile Include="Src\Native\Win32Hwnd.cs" />
     <Compile Include="Src\SimpleBSON.cs" />
+    <Compile Include="Src\SpaceRepetition.cs" />
     <Compile Include="Src\StickyWindow.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -167,11 +172,11 @@
       <Link>DynamicHook.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Resources\note.ico" />
-    <Content Include="D:\sciter-sdk\bin\64\sciter.dll">
-      <Link>sciter.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="res\history.html" />
+    <Content Include="sciter.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\note.ico" />
     <Content Include="res\css\global.css" />
     <Content Include="res\css\srs.css" />
     <Content Include="res\css\htmlarea.css" />

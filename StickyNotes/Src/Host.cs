@@ -45,17 +45,26 @@ namespace StickyNotes
 			Program.Wnds.Add(guid, wnd);
 
 			var view = wnd.CallFunction("View_LoadNote", args[0]);
-			wnd.Show();
-			//wnd.SetUltraTopmost(true);
 
+			wnd.Show();
+			bool res = User32.SetForegroundWindow(wnd._hwnd);
+			new Win32Hwnd(wnd._hwnd).FocusAndActivate();
 			host.InvokePost(() =>
 			{
-				wnd.Show();
 				new Win32Hwnd(wnd._hwnd).FocusAndActivate();
+				wnd.Show();
+				res = User32.SetForegroundWindow(wnd._hwnd);
+				Debug.WriteLine("GOGOG");
 			});
 			return view;
 		}
 
+
+		public SciterValue Host_GetDecks()
+		{
+			var decks = new SpaceRepetition().GetDecks();
+			return SciterValue.FromObject(decks);
+		}
 
 		public SciterValue Host_NewGUID() => new SciterValue(Guid.NewGuid().ToString());
 		public SciterValue Host_AppVersion()

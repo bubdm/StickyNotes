@@ -1,19 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Windows.Forms;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using Microsoft.WindowsAPICodePack.Shell;
+using Microsoft.WindowsAPICodePack.Taskbar;
+using PInvoke;
 using SciterSharp;
 using SciterSharp.Interop;
-using PInvoke;
-using Microsoft.WindowsAPICodePack.Taskbar;
-using System.Reflection;
-using System.IO;
-using Microsoft.WindowsAPICodePack.Shell;
 
 namespace StickyNotes
 {
@@ -83,7 +79,7 @@ namespace StickyNotes
 			_ni.Click += (s, e) =>
 			{
 				if((e as MouseEventArgs).Button == MouseButtons.Left)
-					ShowIt(true);
+					Activate();
 			};
 		}
 
@@ -146,6 +142,12 @@ namespace StickyNotes
 				wnd.SetUltraTopmost(show);
 				wnd.Show();
 			}
+		}
+
+		private void Activate()
+		{
+			foreach(var wnd in Program.Wnds.Values)
+				new Win32Hwnd(wnd._hwnd).FocusAndActivate();
 		}
 
 		#region PInvoke stuff

@@ -20,7 +20,6 @@ self.on("~keydown", function(evt) {
 		case Event.VK_4:
 		case Event.VK_5:
 			{
-				count();
 				var hX = evt.keyCode - Event.VK_1 + 1;
 				self#htmlarea.execCommand("format:morph-block:h" + hX);
 			}

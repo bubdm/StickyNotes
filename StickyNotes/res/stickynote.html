@@ -12,10 +12,11 @@
 		include "tis/keyboard.tis";
 		include "tis/menu.tis";
 
+		var a = view.Host_GetDecks();
+		console.show(a);
+
 		var note;
 		var guid;
-
-		console.show(Settings.ns_data);
 
 		function View_LoadNote(_guid) {
 			note = Settings.ns_data.dic_notes[_guid];
@@ -53,7 +54,7 @@
 		};
 
 		if(Utils.InDBGView) {
-			Settings.ns_data.dic_notes = { "guid": { } };
+			//Settings.ns_data.dic_notes = { "guid": { } };
 			self.post(::View_LoadNote("guid"));
 		}
 

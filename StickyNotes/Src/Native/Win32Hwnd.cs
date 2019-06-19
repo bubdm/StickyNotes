@@ -47,7 +47,7 @@ namespace StickyNotes
 		{
 			SetFocus(Handle);
 			SetActiveWindow(Handle);
-			Debug.Assert(GetFocus() == Handle);
+			//Debug.Assert(GetFocus() == Handle);
 		}
 
 		[DllImport("user32.dll", SetLastError = true)]
