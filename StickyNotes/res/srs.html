@@ -11,8 +11,57 @@
 	<script type="text/tiscript">
 		include "lib_settings/settings.tis";
 
-		var a = view.Host_GetDecks();
-		console.show(a);
+		if(Utils.InDBGView) {
+			view.Host_GetTodayCards = function() {
+				return [ { id: 1, front: "Brasil", back: "Brasilia" } ];
+			};
+			view.Host_ReviewCard = function(card_id, ok) {
+
+			}
+		}
+
+		var arr_cards = view.Host_GetTodayCards();
+		var icard_review = 0;
+		var cur_card;
+
+
+		class UI
+		{
+			function Setup()
+			{
+				self#front.onClick = ShowCardAnswear;
+				self#btn-ok.onClick = function() {
+					view.Host_ReviewCard(cur_card.id, true);
+					ShowNextCard();
+				};
+				self#btn-nok.onClick = function() {
+					view.Host_ReviewCard(cur_card.id, false);
+					ShowNextCard();
+				};
+
+				ShowNextCard();
+
+				self#btn-add.onClick = function() {
+					view.dialog(self.url("srs_add.html"));
+				};
+			}
+
+			function ShowNextCard() {
+				if(arr_cards.length == icard_review) {
+					self#done.state.current = true;
+					return;
+				}
+				cur_card = arr_cards[icard_review++];
+				self#front.$(h1).text = cur_card.front;
+				self#front.state.current = true;
+			}
+			function ShowCardAnswear() {
+				self#back.$(h1).text = cur_card.back;
+				self#back.state.current = true;
+			}
+		}
+
+		UI.Setup();
 	</script>
 </head>
 
@@ -25,23 +74,34 @@
 
 	<main>
 		<div #front>
-			<h1>Brasil</h1>
-			<button>Click to flip</button>
+			<vflow>
+				<h1 />
+			</vflow>
+			<hflow>
+				<h5>Click to flip</h5>
+			</hflow>
 		</div>
 
 		<div #back>
-			<h1>Brasilia</h1>
+			<vflow>
+				<h2>Resposta:</h2>
+				<h1 />
+			</vflow>
 
+			<hflow>
+				<button #btn-ok>Acertei</button>
+				<button #btn-nok>Errei</button>
+			</hflow>
+		</div>
+
+		<div #done>
+			<vflow>
+				<h2>All today Flashcard were answered!</h2>
+				<h2>Get back tomorrow.</h2>
+			</vflow>
+
+			<hflow></hflow>
 		</div>
 	</main>
-
-	<div #toolbar>
-		<img src="img/format-bold.svg" #btn-bold />
-		<img src="img/italic.svg" #btn-italic />
-		<img src="img/underline-669.svg" #btn-underline />
-		<img src="img/format-strikethrough-variant.svg" #btn-strike />
-		<img src="img/list.svg" #btn-list />
-		<img src="img/horizontal-rule.svg" #btn-hr style="display: none" />
-	</div>
 </body>
 </html>

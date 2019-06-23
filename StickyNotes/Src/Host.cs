@@ -60,10 +60,20 @@ namespace StickyNotes
 		}
 
 
-		public SciterValue Host_GetDecks()
+		public SciterValue Host_GetTodayCards()
 		{
-			var decks = new SpaceRepetition().GetDecks();
-			return SciterValue.FromObject(decks);
+			var cards = new SpaceRepetition().TodayCards();
+			return SciterValue.FromObject(cards);
+		}
+
+		public void Host_ReviewCard(SciterValue[] args)
+		{
+			new SpaceRepetition().ReviewAttempt(args[0].Get(0), args[0].Get(false));
+		}
+
+		public void Host_AddCard(SciterValue[] args)
+		{
+			new SpaceRepetition().AddCard(args[0].Get(""), args[1].Get(""));
 		}
 
 		public SciterValue Host_NewGUID() => new SciterValue(Guid.NewGuid().ToString());

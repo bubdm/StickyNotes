@@ -82,33 +82,34 @@ namespace StickyNotes
 			// day 0
 			_now = _now.AddDays(0);
 			Debug.Assert(TodayCards().Count(c => c.Id == card.Id) == 1);
-			ReviewAttempt(card, true);
+			ReviewAttempt(card.Id, true);
 
 			// day 2
 			_now = _now.AddDays(2);
 			Debug.Assert(TodayCards().Count(c => c.Id == card.Id) == 1);
-			ReviewAttempt(card, true);
+			ReviewAttempt(card.Id, true);
 
 			// day 4
 			_now = _now.AddDays(4);
 			Debug.Assert(TodayCards().Count(c => c.Id == card.Id) == 1);
-			ReviewAttempt(card, true);
+			ReviewAttempt(card.Id, true);
 
 			// day 8
 			_now = _now.AddDays(8);
 			Debug.Assert(TodayCards().Count(c => c.Id == card.Id) == 1);
-			ReviewAttempt(card, false);
+			ReviewAttempt(card.Id, false);
 
 			// day 9
 			_now = _now.AddDays(1);
 			Debug.Assert(TodayCards().Count(c => c.Id == card.Id) == 1);
-			ReviewAttempt(card, true);
+			ReviewAttempt(card.Id, true);
 		}
 
-		public void ReviewAttempt(Flashcard card, bool correct)
+		public void ReviewAttempt(int card_id, bool correct)
 		{
-			Debug.Assert(TodayCards().Count(c => c.Id == card.Id) == 1);
+			Debug.Assert(TodayCards().Count(c => c.Id == card_id) == 1);
 
+			var card = _db_cards.FindById(card_id);
 			card.dt_last_review = _now;
 			if(correct)
 				card.level++;
@@ -132,6 +133,21 @@ namespace StickyNotes
 				}
 			}
 			return res;
+		}
+
+		public void AddCard(string front, string back)
+		{
+			var card = new Flashcard()
+			{
+				front = front,
+				back = back,
+				level = 0
+			};
+			_db_cards.Insert(card);
+
+			var deck = _db_decks.FindAll().First();
+			deck.cards.Add(card);
+			_db_decks.Update(deck);
 		}
 
 		private DateTime CardReviewDate(Flashcard card)

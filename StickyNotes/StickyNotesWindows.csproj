@@ -173,6 +173,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="res\history.html" />
+    <None Include="res\srs_add.html" />
     <Content Include="sciter.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

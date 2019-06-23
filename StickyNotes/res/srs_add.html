@@ -1,0 +1,40 @@
+<!-- OmniView:on -->
+<html>
+<head>
+	<title>Add new Flashcard</title>
+
+	<style>
+		@import url(css/global.css);
+
+		html {  }
+
+		label { width: 70px; }
+		hflow {  margin-bottom: 6px; }
+	</style>
+
+	<script type="text/tiscript">
+		include "lib_settings/settings.tis";
+
+		self#btn-add.onClick = function() {
+			view.Host_AddCard(self#question.value, self#answer.value);
+			view.msgbox(#information, "Flascard added with success!", "Add new Flashcard");
+			view.close();
+		};
+	</script>
+</head>
+
+<body>
+	<h3>Write down your new flashcard:</h3>
+	<hflow>
+		<label>Question:</label>
+		<input #question />
+	</hflow>
+
+	<hflow>
+		<label>Answer:</label>
+		<input #answer />
+	</hflow>
+
+	<button #btn-add>Add</button>
+</body>
+</html>
