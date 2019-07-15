@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ion;
+//using Ion;
 
 namespace StickyNotes
 {
@@ -16,7 +16,7 @@ namespace StickyNotes
 		public const string Version = "1.00";
 
 		public const string AppName = "Sticky Notes";
-		public const EProduct ProductID = EProduct.STICKY_NOTES;
+		//public const EProduct ProductID = EProduct.STICKY_NOTES;
 
 		public static readonly string DirUserData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/MISoftware/" + AppName;
 		public static readonly string APP_EXE = Process.GetCurrentProcess().MainModule.FileName;

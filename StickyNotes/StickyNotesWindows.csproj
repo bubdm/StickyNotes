@@ -128,12 +128,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\MVC\IonMVC\IonMVC\Classes\Ion\IonConsts.cs">
-      <Link>Src\Ion\IonConsts.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\MVC\IonMVC\IonMVC\Classes\Ion\UpdateControl.cs">
-      <Link>Src\Ion\UpdateControl.cs</Link>
-    </Compile>
     <Compile Include="ArchiveResource.cs" />
     <Compile Include="Src\ConstsGlobals.cs" />
     <Compile Include="Src\Native\Hooker.cs" />
@@ -206,7 +200,9 @@
     <None Include="res\srs.html" />
     <Content Include="res\unittest.html" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Src\Ion\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>cd $(ProjectDir)

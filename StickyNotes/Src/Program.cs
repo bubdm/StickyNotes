@@ -9,7 +9,7 @@ using SciterSharp;
 using SciterSharp.Interop;
 using System.Net;
 using StickyNotes.Native;
-using Ion;
+//using Ion;
 using PInvoke;
 
 namespace StickyNotes
@@ -36,7 +36,7 @@ namespace StickyNotes
 			}
 			#endregion
 
-			UpdateControl.Setup();
+			//UpdateControl.Setup();
 
 			// Sciter needs this for drag'n'drop support; STAThread is required for OleInitialize succeess
 			int oleres = PInvokeWindows.OleInitialize(IntPtr.Zero);
