@@ -21,7 +21,7 @@
 		View.Proxy_AddNote = function() {// from taskbar
 			var size;
 			var color = 0;
-			if(dic_guid2view.length > 0)
+			if(Settings.ns_data.dic_notes.length > 0)
 			{
 				var last_guid = Object.keys(dic_guid2view)[dic_guid2view.length-1];
 				var note = Settings.ns_data.dic_notes[last_guid];

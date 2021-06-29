@@ -17,7 +17,6 @@
 
 		function View_LoadNote(_guid) {
 			note = Settings.ns_data.dic_notes[_guid];
-		
 
 			guid = _guid;
 			assert(note);
@@ -79,7 +78,7 @@
 				self#btn-bold.onClick = ::self#htmlarea.execCommand("format:toggle-span:b|strong");
 				self#btn-italic.onClick = ::self#htmlarea.execCommand("format:toggle-span:i");
 				self#btn-underline.onClick = ::self#htmlarea.execCommand("format:toggle-span:u");
-				self#btn-strike.onClick = ::self#htmlarea.execCommand("format:toggle-span:s");
+				//self#btn-strike.onClick = ::self#htmlarea.execCommand("format:toggle-span:s");
 				self#btn-list.onClick = ::self#htmlarea.execCommand("format:toggle-list:ul");
 				self#btn-hr.onClick = ::self#htmlarea.execCommand("edit:insert-html", "<hr>");
 
