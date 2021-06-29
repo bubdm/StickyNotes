@@ -90,9 +90,8 @@
       <HintPath>..\packages\PInvoke.Windows.ShellScalingApi.0.5.184\lib\net45\PInvoke.Windows.ShellScalingApi.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
-    <Reference Include="SciterSharpWindows, Version=2.0.80.0, Culture=neutral, PublicKeyToken=917100d643775a9e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\SciterSharp\SciterSharp\bin\Debug\SciterSharpWindows.dll</HintPath>
+    <Reference Include="SciterSharpWindows, Version=2.0.91.0, Culture=neutral, PublicKeyToken=917100d643775a9e, processorArchitecture=MSIL">
+      <HintPath>..\packages\SciterSharpWindows.2.0.91\lib\net45\SciterSharpWindows.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -167,7 +166,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="res\history.html" />
-    <None Include="res\srs_add.html" />
     <Content Include="sciter.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -197,7 +195,6 @@
     <Content Include="res\lib_menu\unittes.html" />
     <Content Include="res\lib_settings\unittest.html" />
     <Content Include="res\css\style.css" />
-    <None Include="res\srs.html" />
     <Content Include="res\unittest.html" />
   </ItemGroup>
   <ItemGroup>

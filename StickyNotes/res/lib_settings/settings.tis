@@ -7,7 +7,7 @@ namespace Settings
 	
 	function RestoreWork()// read settings
 	{
-		//stdout.println(cPATH);
+		stdout.println(cPATH);
 
 		var stream = Stream.openFile(cPATH, "r");
 		
@@ -49,6 +49,7 @@ namespace Settings
 if(!View["settings-" + Settings.cNAME] || Utils.InDBGView)
 {
 	Settings.RestoreWork();
+	Settings.ns_data.dic_notes = {};
 }
 
 Settings.ns_data = View["settings-" + Settings.cNAME];

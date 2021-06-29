@@ -101,7 +101,6 @@ namespace StickyNotes
 				{
 				}
 			}
-		
 
 			if(msg==WM_TASKBAR_CREATED)
 			{

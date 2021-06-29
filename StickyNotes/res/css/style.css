@@ -35,7 +35,7 @@ body { margin: 0; background: var(clrBody, silver); }
 html:owns-focus header
 {
 	top: 0;
-	border-bottom-color: var(clrBody, red);
+	//border-bottom-color: var(clrBody, red);
 	transition: top(cubic-out, 180ms, none);
 }
 

@@ -17,6 +17,7 @@
 
 		function View_LoadNote(_guid) {
 			note = Settings.ns_data.dic_notes[_guid];
+		
 
 			guid = _guid;
 			assert(note);
@@ -115,7 +116,7 @@
 						self#htmlarea.value = "<p>" + note.value + "</p>";
 						self#htmlarea.execCommand("navigate:end");
 					}
-					
+
 					Settings.StoreWork();
 				};
 
@@ -160,7 +161,6 @@
 		}
 
 		UI.Setup();
-		//UI.SetClr(6);
 	</script>
 
 	<menu .menu-chromed #menu-main .outline style="margin-top: -4px; margin-left: -7px;">
@@ -206,7 +206,7 @@
 		<img src="img/format-bold.svg" #btn-bold />
 		<img src="img/italic.svg" #btn-italic />
 		<img src="img/underline-669.svg" #btn-underline />
-		<img src="img/format-strikethrough-variant.svg" #btn-strike />
+		<!--<img src="img/format-strikethrough-variant.svg" #btn-strike />-->
 		<img src="img/list.svg" #btn-list />
 		<img src="img/horizontal-rule.svg" #btn-hr style="display: none" />
 	</div>
