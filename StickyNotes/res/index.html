@@ -1,11 +1,9 @@
 <!-- OmniView:on -->
 <html>
 <head>
-	<script type="text/tiscript">
-		include "lib_settings/settings.tis";
-
-		//Settings.ResetData();
-		Settings.RestoreWork();
+	<script type="module">
+		import * as env from "@env";
+		import { Settings } from "js/settings.js";
 
 		var dic_guid2view = {};
 

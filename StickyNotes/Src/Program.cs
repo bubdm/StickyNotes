@@ -54,7 +54,7 @@ namespace StickyNotes
 			var host = new BaseHost();
 			host.Setup(wnd);
 			host.AttachEvh(new HostEvh());
-			host.SetupPage("index.html");
+			host.SetupPage("unittest.html");
 
 			HookerInstance.SetMessageHook();
 

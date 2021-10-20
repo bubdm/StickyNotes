@@ -1,4 +1,4 @@
-<!-- OmniView:on -->
+ï»¿<!-- OmniView:on -->
 <html>
 <head>
 	<style>
@@ -7,19 +7,31 @@
 		@import url(lib_menu/menu-chrome.css);
 	</style>
 
-	<script type="text/tiscript">
-		include "lib_settings/settings.tis";
-		include "tis/keyboard.tis";
-		include "tis/menu.tis";
+	<script type="module">
+		import * as Storage from "@storage";
+		import * as env from "@env";
+		import { Settings } from "js/settings.js";
 
-		var note;
-		var guid;
+		console.log(test.wow);
+
+		let note;
+		let guid;
+
+        function initDb(storage) {
+			storage.root = {
+				version: 1,
+				dic_notes: {},
+			};
+        }
+
+		let storage = Storage.open("file.db");
+		let root = storage.root || initDb(storage);
 
 		function View_LoadNote(_guid) {
-			note = Settings.ns_data.dic_notes[_guid];
+            note = storage.root.dic_notes[_guid];
 
 			guid = _guid;
-			assert(note);
+			console.assert(note);
 
 			UI.SetClr(note.color || 0);
 
@@ -32,58 +44,42 @@
 				note.value = "<p></p>";
 			}
 
-			self#htmlarea.value = note.value;
-			self#htmlarea.execCommand("navigate:start");
-
-			view.on("activate", function(mode) {
-				if(mode === true) {
-					//self.timer(20ms,::self#htmlarea.state.focus = true);
-				}
-			});
-
-			/*self.post(::self#htmlarea.state.focus = true);
-			self.timer(200, function() {
-				log(view.focus);
-				return true;
-			});*/
+            let el_htmlarea = document.$('#htmlarea');
+            el_htmlarea.value = note.value;
+            el_htmlarea.selectRange(0, 0);
 
 			return view;
 		};
 
-		if(Utils.InDBGView) {
-			//Settings.ns_data.dic_notes = { "guid": { } };
-			self.post(::View_LoadNote("guid"));
-		}
-
-		self.on("mousedown", function(evt) {
-			if(evt.target.$is(header))
-				view.Host_EmulateMoveWnd(self);
+		document.on('mousedown', 'header', function (evt) {
+			window.this.xcall("Host_EmulateMoveWnd", document);
 		});
 
 		function onMoveResize() {
 			if(note == undefined)
 				return;
 
-			assert(note == Settings.ns_data.dic_notes[guid]);
-			var (x,y,width,height) = view.box(#rectw, #border, #screen);
+			console.assert(note == storage.root.dic_notes[guid]);
+            var [x, y, width, height] = window.this.box("rectw", "border", "monitor");
 			note.size = { x: x, y: y, width: width, height: height };
-			Settings.StoreWork();
+			storage.commit();
 		};
-		view.on("size", onMoveResize).on("move", onMoveResize);
+		Window.this.on("size", onMoveResize).on("move", onMoveResize);
 
 		class UI
 		{
-			function Setup()
+			static Setup()
 			{
-				self#btn-bold.onClick = ::self#htmlarea.execCommand("format:toggle-span:b|strong");
-				self#btn-italic.onClick = ::self#htmlarea.execCommand("format:toggle-span:i");
-				self#btn-underline.onClick = ::self#htmlarea.execCommand("format:toggle-span:u");
-				//self#btn-strike.onClick = ::self#htmlarea.execCommand("format:toggle-span:s");
-				self#btn-list.onClick = ::self#htmlarea.execCommand("format:toggle-list:ul");
-				self#btn-hr.onClick = ::self#htmlarea.execCommand("edit:insert-html", "<hr>");
+                let el_htmlarea = document.$('#htmlarea');
+                document.$('#btn-bold').onclick = () => el_htmlarea.execCommand("format:toggle-span:b|strong");
+                document.$('#btn-italic').onclick = () => el_htmlarea.execCommand("format:toggle-span:i");
+                document.$('#btn-underline').onclick = () => el_htmlarea.execCommand("format:toggle-span:u");
+                //document.$('#btn-strike').onclick = () => el_htmlarea.execCommand("format:toggle-span:s");
+                document.$('#btn-list').onclick = () => el_htmlarea.execCommand("format:toggle-list:ul");
+                document.$('#btn-hr').onclick = () => el_htmlarea.execCommand("edit:insert-html", "<hr>");
 
-				self#btn-add.onClick = function() {
-					var (x,y,width,height) = view.box(#rectw, #border, #screen);
+                document.$('#btn-add').onclick = function() {
+                    var [x, y, width, height] = window.this.box("rectw", "border", "monitor");
 
 					var size = {
 						x: x + width + 6,
@@ -95,31 +91,31 @@
 					View.Proxy_CreateStickyView(note.color, size);
 				};
 
-				self#btn-dots.onClick = function() {
-					this.popup(self#menu-main, Utils.popupAttachment());
+                document.$('#btn-dots').onclick = function() {
+                    this.popup(document.$('#menu-main'));
 				};
 
-				self#btn-close.onClick = function() {
-					delete Settings.ns_data.dic_notes[guid];
+                document.$('#btn-close').onclick = function() {
+					delete storage.root.dic_notes[guid];
 
-					Settings.StoreWork();
+					storage.commit();
 					view.close();
 				};
 
-				self#htmlarea.onValueChanged = function() {
+                el_htmlarea.onValueChanged = function() {
 					note.value = this.value;
 					if(note.value == "<text></text>")
-						self#htmlarea.value = "<p></p>";
+                        el_htmlarea.value = "<p></p>";
 					else if(note.value.length != 0 && note.value[0] != "<")
 					{
-						self#htmlarea.value = "<p>" + note.value + "</p>";
-						self#htmlarea.execCommand("navigate:end");
+                        el_htmlarea.value = "<p>" + note.value + "</p>";
+                        el_htmlarea.execCommand("navigate:end");
 					}
 
-					Settings.StoreWork();
+					storage.commit();
 				};
 
-				self#htmlarea.onExchange = function(evt) {
+                /*el_htmlarea.onExchange = function(evt) {
 					//return false;
 
 					console.log(this.selection)
@@ -145,17 +141,45 @@
 							console.log(files[0]);
 						}
 					}
+				};*/
+
+				// Menu
+                document.$('#mi-colors').on("click", "div", function(evt) {
+					UI.SetClr(evt.target.index);
+				});
+
+				document.$('#mi-quit').onClick = () => Windows.this.xcall("Host_Quit");
+                document.$('#mi-quit').$('accesskey').html = env.PLATFORM == 'OSX' ? "âŒ˜ + Q" : "Ctrl + Q";
+
+                if (env.PLATFORM == 'Windows')
+				{
+                    document.$('#mi-runstart').on('mouseup', function(evt) {
+						let el_btn = this.$('button');
+						el_btn.state.checked = !el_btn.state.checked;
+						Window.this.xcall("Host_RunRegistry", el_btn.state.checked);
+						return true;
+					});
+
+                    //document.$('#mi-runstart').$('button').state.checked = Window.this.Host_IsRegistryRun();
+				}
+
+                document.$('#mi-about').onclick = function() {
+					this.closePopup();
+					Windows.this.dialog({
+						url: document.url("dlg_about.html"),
+						alignment: 5
+					});
 				};
 			}
 
-			function SetClr(clr_idx)// 0 - 6
+            static SetClr(clr_idx)// 0 - 6
 			{
-				self#mi-colors.$$(div)[clr_idx].state.current = true;
-				self.attributes#clr = clr_idx + 1;
-				assert(note);
+                document.$('#mi-colors').$$('div')[clr_idx].state.current = true;
+                document.setAttribute('clr', clr_idx + 1);
+				console.assert(note);
 
 				note.color = clr_idx;
-				Settings.StoreWork();
+				storage.commit();
 			}
 		}
 
@@ -196,9 +220,9 @@
 			<li>Item 2</li>
 			<li>Item 3</li>
 		</ul>
-		<p>Este é um exemplo de nota.</p>
+		<p>Este Ã© um exemplo de nota.</p>
 		<hr />
-		<p>Você pode formatar o texto através barra de botões abaixo.</p>
+		<p>VocÃª pode formatar o texto atravÃ©s barra de botÃµes abaixo.</p>
 	</htmlarea>
 
 	<div #toolbar>

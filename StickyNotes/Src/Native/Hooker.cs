@@ -123,7 +123,9 @@ namespace StickyNotes
 
 			// Create an instance of the HookProc delegate.
 			var dll = Kernel32.LoadLibrary(@"DynamicHook.dll");
+			var err = Kernel32.GetLastError();
 			var proc = Kernel32.GetProcAddress(dll, "HookProc");
+			Debug.Assert(proc != IntPtr.Zero);
 
 			// Note, using System.AppDomain.GetCurrentThreadId produces
 			// a compiler warning: "GetCurrentThreadId has been deprecated 
