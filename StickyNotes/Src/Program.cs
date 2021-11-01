@@ -11,6 +11,7 @@ using System.Net;
 using StickyNotes.Native;
 //using Ion;
 using PInvoke;
+using System.Windows.Forms;
 
 namespace StickyNotes
 {
@@ -54,9 +55,9 @@ namespace StickyNotes
 			var host = new BaseHost();
 			host.Setup(wnd);
 			host.AttachEvh(new HostEvh());
-			host.SetupPage("unittest.html");
+			host.SetupPage("index.html");
 
-			HookerInstance.SetMessageHook();
+			//HookerInstance.SetMessageHook();
 
 			if(!arg_in_test && SingleInstance.IsRunningAndAcquire())
 			{

@@ -5,27 +5,25 @@
 		import * as env from "@env";
 		import { Settings } from "js/settings.js";
 
-		var dic_guid2view = {};
+		let dic_guid2view = {};
 
 		function NewNote(color, size) {
-			assert(typeof(color)==#integer);
-
-			var guid = view.Host_NewGUID();
-			Settings.ns_data.dic_notes[guid] = { size: size, color: color };
-			Settings.StoreWork();
+			let guid = Window.this.xcall("Host_NewGUID");
+			Settings.root.dic_notes[guid] = { size: size, color: color };
+			Settings.commit();
 			return guid;
 		}
 
-		View.Proxy_AddNote = function() {// from taskbar
-			var size;
-			var color = 0;
-			if(Settings.ns_data.dic_notes.length > 0)
-			{
-				var last_guid = Object.keys(dic_guid2view)[dic_guid2view.length-1];
-				var note = Settings.ns_data.dic_notes[last_guid];
+		Window.this.Proxy_AddNote = function() {// from taskbar
+			console.log("Proxy_AddNote");
+			let size = {};
+			let color = 0;
+			if(Settings.root.dic_notes.length > 0) {
+				let last_guid = Object.keys(dic_guid2view)[dic_guid2view.length - 1];
+				let note = Settings.root.dic_notes[last_guid];
 
-				var base_view = dic_guid2view[Object.keys(dic_guid2view)[0]];
-				var (x,y,width,height) = base_view.box(#rectw, #border, #screen);
+				let base_view = dic_guid2view[Object.keys(dic_guid2view)[0]];
+				let [x, y, width, height] = base_view.box("rectw", "border", "desktop");
 				size = {
 					x: x + width + 6,
 					y: y,
@@ -35,16 +33,16 @@
 				color = note.color;
 			}
 
-			View.Proxy_CreateStickyView(color, size);
+			Window.this.Proxy_CreateStickyView(color, size);
 		};
 
-		View.Proxy_CreateStickyView = function(color, size) {// from + button or taskbar, not called for notes loaded from config
-			while : outer (true)
+		Window.this.Proxy_CreateStickyView = function(color, size) {// from + button or taskbar, not called for notes loaded from config
+			console.log("Proxy_CreateStickyView");
+			outer: while(true)
 			{
-				for(var (guid,v) in Settings.ns_data.dic_notes)
-				{
-					if(v.size && JSON.stringify(v.size) == JSON.stringify(size))
-					{
+				for(let guid in Settings.root.dic_notes) {
+					let v = Settings.root.dic_notes[guid];
+					if(v.size && JSON.stringify(v.size) == JSON.stringify(size)) {
 						size.x += 20;
 						size.y += 20;
 						continue outer;
@@ -53,17 +51,17 @@
 				break;
 			}
 
-			var guid = NewNote(color, size);
-			var new_view = view.Host_CreateStickyWindow(guid);
+			let guid = NewNote(color, size);
+			let new_view = Window.this.xcall("Host_CreateStickyWindow", guid);
 			dic_guid2view[guid] = new_view;
 		};
 
-		if(Settings.ns_data.dic_notes.length == 0)
+		if(Settings.root.dic_notes.length == 0)
 			NewNote(0, undefined);
 
-		for(var (guid,v) in Settings.ns_data.dic_notes)
-		{
-			var new_view = view.Host_CreateStickyWindow(guid);
+		for(let guid in Settings.root.dic_notes) {
+			let v = Settings.root.dic_notes[guid];
+			let new_view = Window.this.xcall("Host_CreateStickyWindow", guid);
 			dic_guid2view[guid] = new_view;
 		}
 	</script>

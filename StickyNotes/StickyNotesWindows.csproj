@@ -64,6 +64,9 @@
   <PropertyGroup>
     <ApplicationIcon>Resources\note.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="LiteDB, Version=4.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
       <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
@@ -146,11 +149,14 @@
     <Compile Include="Src\StickyWindow.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="scripts\packfolder.exe" />
     <None Include="App.config" />
+    <None Include="app.manifest" />
     <None Include="res\index.html" />
-    <None Include="res\lib_settings\settings.tis" />
     <Content Include="res\js\settings.js" />
     <Content Include="res\js\utils.js" />
+    <None Include="res\storage.json" />
+    <None Include="scripts\pack.bat" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -194,13 +200,10 @@
     <Content Include="res\lib_menu\menu-chrome.css" />
     <Content Include="res\lib_menu\toggler2.css" />
     <Content Include="res\lib_menu\unittes.html" />
-    <Content Include="res\lib_settings\unittest.html" />
     <Content Include="res\css\style.css" />
     <Content Include="res\unittest.html" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Src\Ion\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>cd $(ProjectDir)

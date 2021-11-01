@@ -22,6 +22,7 @@ namespace StickyNotes
 
 		public void Host_Dbg(SciterValue[] args)
 		{
+			var json = args[0].ToJSONString();
 		}
 
 		public SciterValue Host_CreateStickyWindow(SciterValue[] args)
@@ -45,6 +46,8 @@ namespace StickyNotes
 			Program.Wnds.Add(guid, wnd);
 
 			var view = wnd.CallFunction("View_LoadNote", args[0]);
+			var aa = view.ToJSONString();
+			Debug.Assert(!view.IsUndefined);
 
 			wnd.Show();
 			bool res = User32.SetForegroundWindow(wnd._hwnd);
@@ -54,11 +57,9 @@ namespace StickyNotes
 				new Win32Hwnd(wnd._hwnd).FocusAndActivate();
 				wnd.Show();
 				res = User32.SetForegroundWindow(wnd._hwnd);
-				Debug.WriteLine("GOGOG");
 			});
 			return view;
 		}
-
 
 		public SciterValue Host_GetTodayCards()
 		{
@@ -86,6 +87,23 @@ namespace StickyNotes
 		}
 		public void Host_EmulateMoveWnd() => _wnd.EmulateMoveWnd();
 		public void Host_Quit() => Program.Exit();
+		public SciterValue Host_ReadFile(SciterValue[] args)
+		{
+			string path = args[0].Get("");
+			if(File.Exists(path))
+			{
+				string data = File.ReadAllText(path);
+				return new SciterValue(data);
+			}
+			return SciterValue.Undefined;
+		}
+
+		public void Host_WriteFile(SciterValue[] args)
+		{
+			string path = args[0].Get("");
+			string data = args[1].Get("");
+			File.WriteAllText(path, data);
+		}
 
 
 #if WINDOWS

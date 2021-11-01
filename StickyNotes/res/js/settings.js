@@ -1,22 +1,33 @@
 ﻿import * as env from "@env";
-import * as Storage from "@storage";
+import * as sys from "@sys";
+import * as sciter from "@sciter";
 
-function initDb(storage) {
-	storage.root = {
+function initDb() {
+	let root = {
 		version: 1,
 		dic_notes: {},
 	};
+	return root;
 }
 
-let storage = Storage.open(env.home("file.db"));
-let root = storage.root || initDb(storage);
+const PATH = document.url('storage.json').substr(7);
 
 class Settings {
-	static root = root;
+	static root;
 
-	commit() {
-		storage.commit();
+	static setup() {
+		let read = Window.this.xcall("Host_ReadFile", PATH);
+		let data = eval('(' + read + ')') || initDb();
+		Settings.root = data;
+		console.log(JSON.stringify(Settings.root));
+	}
+
+	static commit() {
+		console.log(JSON.stringify(Settings.root));
+		Window.this.xcall("Host_WriteFile", PATH, JSON.stringify(Settings.root))
 	}
 }
+
+Settings.setup();
 
 export { Settings }

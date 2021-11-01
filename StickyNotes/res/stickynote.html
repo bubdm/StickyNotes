@@ -7,30 +7,13 @@
 		@import url(lib_menu/menu-chrome.css);
 	</style>
 
-	<script type="module">
-		import * as Storage from "@storage";
-		import * as env from "@env";
-		import { Settings } from "js/settings.js";
-
-		console.log(test.wow);
-
-		let note;
-		let guid;
-
-        function initDb(storage) {
-			storage.root = {
-				version: 1,
-				dic_notes: {},
-			};
-        }
-
-		let storage = Storage.open("file.db");
-		let root = storage.root || initDb(storage);
+	<script>
+		var note;
+		var guid;
 
 		function View_LoadNote(_guid) {
-            note = storage.root.dic_notes[_guid];
-
-			guid = _guid;
+			var note = Settings.root.dic_notes[_guid];
+			var guid = _guid;
 			console.assert(note);
 
 			UI.SetClr(note.color || 0);
@@ -39,30 +22,36 @@
 				view.move(note.size.x, note.size.y, note.size.width, note.size.height);
 			onMoveResize();
 
-			if(!note.value)
-			{
+			if(!note.value) {
 				note.value = "<p></p>";
 			}
 
-            let el_htmlarea = document.$('#htmlarea');
-            el_htmlarea.value = note.value;
-            el_htmlarea.selectRange(0, 0);
+			let el_htmlarea = document.$('#htmlarea');
+			el_htmlarea.value = note.value;
+			el_htmlarea.selectRange(0, 0);
 
+			console.log(guid);
+			console.log(note);
 			return view;
 		};
+	</script>
 
-		document.on('mousedown', 'header', function (evt) {
-			window.this.xcall("Host_EmulateMoveWnd", document);
+	<script type="module">
+		import * as env from "@env";
+		import { Settings } from "js/settings.js";
+
+		document.on('mousedown', '#area-drag', function (evt) {
+			Window.this.xcall("Host_EmulateMoveWnd", document);
 		});
 
 		function onMoveResize() {
 			if(note == undefined)
 				return;
 
-			console.assert(note == storage.root.dic_notes[guid]);
+			console.assert(note == Settings.root.dic_notes[guid]);
             var [x, y, width, height] = window.this.box("rectw", "border", "monitor");
 			note.size = { x: x, y: y, width: width, height: height };
-			storage.commit();
+			Settings.commit();
 		};
 		Window.this.on("size", onMoveResize).on("move", onMoveResize);
 
@@ -79,7 +68,7 @@
                 document.$('#btn-hr').onclick = () => el_htmlarea.execCommand("edit:insert-html", "<hr>");
 
                 document.$('#btn-add').onclick = function() {
-                    var [x, y, width, height] = window.this.box("rectw", "border", "monitor");
+                    var [x, y, width, height] = Window.this.box("rectw", "border", "monitor");
 
 					var size = {
 						x: x + width + 6,
@@ -88,18 +77,19 @@
 						height: height
 					};
 
-					View.Proxy_CreateStickyView(note.color, size);
+					Window.this.Proxy_CreateStickyView(note.color, size);
 				};
 
-                document.$('#btn-dots').onclick = function() {
-                    this.popup(document.$('#menu-main'));
-				};
+                document.$('#btn-dots').on("click", function() {
+					this.popup(document.$('#menu-main'));
+				});
 
-                document.$('#btn-close').onclick = function() {
-					delete storage.root.dic_notes[guid];
+				document.$('#btn-close').onclick = function() {
+					console.log(guid);
+					delete Settings.root.dic_notes[guid];
 
-					storage.commit();
-					view.close();
+					Settings.commit();
+					Window.this.close();
 				};
 
                 el_htmlarea.onValueChanged = function() {
@@ -112,7 +102,7 @@
                         el_htmlarea.execCommand("navigate:end");
 					}
 
-					storage.commit();
+					Settings.commit();
 				};
 
                 /*el_htmlarea.onExchange = function(evt) {
@@ -148,9 +138,6 @@
 					UI.SetClr(evt.target.index);
 				});
 
-				document.$('#mi-quit').onClick = () => Windows.this.xcall("Host_Quit");
-                document.$('#mi-quit').$('accesskey').html = env.PLATFORM == 'OSX' ? "⌘ + Q" : "Ctrl + Q";
-
                 if (env.PLATFORM == 'Windows')
 				{
                     document.$('#mi-runstart').on('mouseup', function(evt) {
@@ -165,7 +152,7 @@
 
                 document.$('#mi-about').onclick = function() {
 					this.closePopup();
-					Windows.this.dialog({
+					Window.this.dialog({
 						url: document.url("dlg_about.html"),
 						alignment: 5
 					});
@@ -179,7 +166,7 @@
 				console.assert(note);
 
 				note.color = clr_idx;
-				storage.commit();
+				Settings.commit();
 			}
 		}
 
@@ -201,7 +188,6 @@
 			<ul>
 				<li #mi-runstart>Run at startup<button|toggler2><label .true>On</label><label .false>Off</label></button></li>
 				<li #mi-about>About</li>
-				<li #mi-quit>Quit<accesskey /></li>
 			</ul>
 		</div>
 	</menu>
@@ -210,6 +196,7 @@
 <body>
 	<header>
 		<div .btn #btn-add><img src="img/ios-plus-empty.svg" /></div>
+		<div .space #area-drag></div>
 		<div .btn.space #btn-dots><img src="img/more-button-of-three-dots.svg" /></div>
 		<div .btn #btn-close><img src="img/close.svg" /></div>
 	</header>

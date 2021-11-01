@@ -85,7 +85,7 @@ namespace StickyNotes
 
 		public void CreateNote()
 		{
-			EvalScript("View.Proxy_AddNote()");
+			EvalScript("Window.this.Proxy_AddNote()");
 		}
 
 		public void Dispose()
