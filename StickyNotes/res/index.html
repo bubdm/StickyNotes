@@ -15,7 +15,6 @@
 		}
 
 		Window.this.Proxy_AddNote = function() {// from taskbar
-			console.log("Proxy_AddNote");
 			let size = {};
 			let color = 0;
 			if(Settings.root.dic_notes.length > 0) {
@@ -37,7 +36,6 @@
 		};
 
 		Window.this.Proxy_CreateStickyView = function(color, size) {// from + button or taskbar, not called for notes loaded from config
-			console.log("Proxy_CreateStickyView");
 			outer: while(true)
 			{
 				for(let guid in Settings.root.dic_notes) {

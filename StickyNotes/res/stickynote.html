@@ -8,18 +8,24 @@
 	</style>
 
 	<script>
+		
+	</script>
+
+	<script type="module">
+		import * as env from "@env";
+		import { Settings } from "js/settings.js";
+
 		var note;
 		var guid;
 
-		function View_LoadNote(_guid) {
-			var note = Settings.root.dic_notes[_guid];
-			var guid = _guid;
-			console.assert(note);
+		globalThis.View_LoadNote = function(_guid) {
+			note = Settings.root.dic_notes[_guid];
+			guid = _guid;
 
 			UI.SetClr(note.color || 0);
 
 			if(note.size)
-				view.move(note.size.x, note.size.y, note.size.width, note.size.height);
+				Window.this.move(note.size.x, note.size.y, note.size.width, note.size.height);
 			onMoveResize();
 
 			if(!note.value) {
@@ -30,15 +36,8 @@
 			el_htmlarea.value = note.value;
 			el_htmlarea.selectRange(0, 0);
 
-			console.log(guid);
-			console.log(note);
 			return view;
 		};
-	</script>
-
-	<script type="module">
-		import * as env from "@env";
-		import { Settings } from "js/settings.js";
 
 		document.on('mousedown', '#area-drag', function (evt) {
 			Window.this.xcall("Host_EmulateMoveWnd", document);
@@ -48,8 +47,8 @@
 			if(note == undefined)
 				return;
 
-			console.assert(note == Settings.root.dic_notes[guid]);
-            var [x, y, width, height] = window.this.box("rectw", "border", "monitor");
+			//console.assert(note == Settings.root.dic_notes[guid]);
+            var [x, y, width, height] = Window.this.box("rectw", "border", "monitor");
 			note.size = { x: x, y: y, width: width, height: height };
 			Settings.commit();
 		};
@@ -92,7 +91,7 @@
 					Window.this.close();
 				};
 
-                el_htmlarea.onValueChanged = function() {
+				el_htmlarea.on("change", function(evt) {
 					note.value = this.value;
 					if(note.value == "<text></text>")
                         el_htmlarea.value = "<p></p>";
@@ -103,7 +102,7 @@
 					}
 
 					Settings.commit();
-				};
+				});
 
                 /*el_htmlarea.onExchange = function(evt) {
 					//return false;
@@ -134,8 +133,8 @@
 				};*/
 
 				// Menu
-                document.$('#mi-colors').on("click", "div", function(evt) {
-					UI.SetClr(evt.target.index);
+				document.$('#mi-colors').on("click", "div", function(evt) {
+					UI.SetClr(evt.target.elementIndex);
 				});
 
                 if (env.PLATFORM == 'Windows')
@@ -163,7 +162,6 @@
 			{
                 document.$('#mi-colors').$$('div')[clr_idx].state.current = true;
                 document.setAttribute('clr', clr_idx + 1);
-				console.assert(note);
 
 				note.color = clr_idx;
 				Settings.commit();
